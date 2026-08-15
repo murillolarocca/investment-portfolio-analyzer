@@ -1,0 +1,1442 @@
+<title>Carteira Ion & Avenue</title>
+<style>
+:root{color-scheme:light;--bg:#f9f9f7;--surface:#fcfcfb;--surface-2:#f0efec;--ink:#0b0b0b;--ink-2:#52514e;--ink-muted:#898781;--border:rgba(11,11,11,0.10);--grid:#e1e0d9;--blue:#2a78d6;--orange:#eb6834;--aqua:#1baf7a;--yellow:#eda100;--good:#0ca30c;--warning:#fab219;--serious:#ec835a;--critical:#d03b3b;--dred:#e34948;--dmid:#f0efec}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){color-scheme:dark;--bg:#0d0d0d;--surface:#1a1a19;--surface-2:#232322;--ink:#ffffff;--ink-2:#c3c2b7;--ink-muted:#898781;--border:rgba(255,255,255,0.10);--grid:#2c2c2a;--blue:#3987e5;--orange:#d95926;--aqua:#199e70;--yellow:#c98500;--good:#0ca30c;--warning:#fab219;--serious:#ec835a;--critical:#e66767;--dred:#e66767;--dmid:#383835}}
+:root[data-theme="dark"]{color-scheme:dark;--bg:#0d0d0d;--surface:#1a1a19;--surface-2:#232322;--ink:#ffffff;--ink-2:#c3c2b7;--ink-muted:#898781;--border:rgba(255,255,255,0.10);--grid:#2c2c2a;--blue:#3987e5;--orange:#d95926;--aqua:#199e70;--yellow:#c98500;--good:#0ca30c;--warning:#fab219;--serious:#ec835a;--critical:#e66767;--dred:#e66767;--dmid:#383835}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",sans-serif;font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1120px;margin:0 auto;padding:28px 20px 0}
+.num{font-variant-numeric:tabular-nums}
+/* Page header */
+header.page{display:flex;flex-wrap:wrap;gap:16px 32px;align-items:flex-end;justify-content:space-between;padding-bottom:20px;margin-bottom:20px;border-bottom:1px solid var(--border)}
+header.page h1{font-size:24px;font-weight:700;margin:0 0 2px;letter-spacing:-0.01em}
+header.page .sub{color:var(--ink-2);font-size:13px;margin:0}
+header.page .meta{text-align:right;font-size:12px;color:var(--ink-muted);line-height:1.7}
+header.page .meta strong{color:var(--ink-2);font-weight:600}
+/* Outer tabs */
+input[name="maintab"]{position:absolute;opacity:0;pointer-events:none}
+.tabbar{display:flex;gap:4px;margin-bottom:28px;border-bottom:1px solid var(--border)}
+.tabbar label{cursor:pointer;padding:10px 18px;font-size:14px;font-weight:600;color:var(--ink-muted);border-bottom:2px solid transparent;margin-bottom:-1px;user-select:none}
+.tabpanel{display:none}
+#tab-resumo:checked~.wrap #panel-resumo,
+#tab-brasil:checked~.wrap #panel-brasil,
+#tab-eua:checked~.wrap #panel-eua{display:block}
+#tab-resumo:checked~.wrap .tabbar label[for="tab-resumo"],
+#tab-brasil:checked~.wrap .tabbar label[for="tab-brasil"],
+#tab-eua:checked~.wrap .tabbar label[for="tab-eua"]{color:var(--ink);border-bottom-color:var(--blue)}
+/* Inner tabs */
+input[name="brtab"],input[name="euatab"]{position:absolute;opacity:0;pointer-events:none}
+.subtabpanel{display:none}
+.subtabbar{display:flex;gap:2px;margin-bottom:24px;border-bottom:1px solid var(--border)}
+.subtabbar label{cursor:pointer;padding:8px 16px;font-size:13.5px;font-weight:600;color:var(--ink-muted);border-bottom:2px solid transparent;margin-bottom:-1px;user-select:none}
+#brtab-acoes:checked~.subtabbar label[for="brtab-acoes"],
+#brtab-rf:checked~.subtabbar label[for="brtab-rf"],
+#brtab-opps:checked~.subtabbar label[for="brtab-opps"]{color:var(--ink);border-bottom-color:var(--aqua)}
+#brtab-acoes:checked~#brtab-panel-acoes,
+#brtab-rf:checked~#brtab-panel-rf,
+#brtab-opps:checked~#brtab-panel-opps{display:block}
+#euatab-acoes:checked~.subtabbar label[for="euatab-acoes"],
+#euatab-etfs:checked~.subtabbar label[for="euatab-etfs"],
+#euatab-opps:checked~.subtabbar label[for="euatab-opps"]{color:var(--ink);border-bottom-color:var(--orange)}
+#euatab-acoes:checked~#euatab-panel-acoes,
+#euatab-etfs:checked~#euatab-panel-etfs,
+#euatab-opps:checked~#euatab-panel-opps{display:block}
+/* Sections */
+section{margin-bottom:36px}
+section>h2{font-size:11.5px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--ink-muted);margin:0 0 4px}
+section>.lede{font-size:13.5px;color:var(--ink-2);margin:0 0 14px;max-width:78ch}
+/* KPIs */
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px}
+.kpi{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px 18px}
+.kpi .label{font-size:11px;color:var(--ink-muted);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:6px}
+.kpi .value{font-size:21px;font-weight:700;letter-spacing:-0.01em}
+.kpi .value.sm{font-size:16px}
+.kpi .foot{font-size:12px;color:var(--ink-2);margin-top:4px}
+.kpi .foot.crit{color:var(--critical);font-weight:600}
+/* Bullet chart */
+.bullet-chart{display:flex;flex-direction:column;gap:20px}
+.bullet-row .rh{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:5px;font-size:13.5px}
+.bullet-row .rh .nm{font-weight:600}
+.bullet-row .rh .vv{color:var(--ink-2);font-size:13px}
+.bullet-track{position:relative;height:24px;background:var(--surface-2);border-radius:6px;overflow:visible;border:1px solid var(--border)}
+.bullet-band{position:absolute;top:0;bottom:0;background:var(--grid);opacity:.9}
+.bullet-bar{position:absolute;top:5px;bottom:5px;left:0;border-radius:3px}
+.bullet-bar.good{background:var(--good)}
+.bullet-bar.warn{background:var(--warning)}
+.bullet-bar.crit{background:var(--critical)}
+.bullet-mid{position:absolute;top:-4px;bottom:-4px;width:2px;background:var(--ink-muted)}
+.bullet-legend{display:flex;gap:18px;font-size:12px;color:var(--ink-2);margin-top:14px;flex-wrap:wrap}
+.bullet-legend .li{display:flex;align-items:center;gap:6px}
+.bullet-legend .sw{width:12px;height:12px;border-radius:3px}
+.bullet-legend .sw.band{background:var(--grid);border:1px solid var(--border)}
+.bullet-legend .sw.tick{width:2px;height:14px;background:var(--ink-muted)}
+/* Drift chart */
+.drift-chart{display:flex;flex-direction:column;gap:16px}
+.drift-row .rh{display:flex;justify-content:space-between;font-size:13.5px;margin-bottom:5px}
+.drift-row .rh .nm{font-weight:600}
+.drift-row .rh .vv{font-weight:700;font-variant-numeric:tabular-nums}
+.drift-row .rh .vv.over{color:var(--dred)}
+.drift-row .rh .vv.under{color:var(--blue)}
+.drift-track{position:relative;height:18px;background:var(--surface-2);border-radius:5px;border:1px solid var(--border)}
+.drift-center{position:absolute;top:-3px;bottom:-3px;left:50%;width:1px;background:var(--ink-muted)}
+.drift-bar{position:absolute;top:3px;bottom:3px;border-radius:3px}
+.drift-bar.over{background:var(--dred)}
+.drift-bar.under{background:var(--blue)}
+.drift-note{font-size:11.5px;color:var(--ink-muted);margin-top:3px}
+/* Stack bar */
+.stack-bar{display:flex;height:32px;border-radius:8px;overflow:hidden;border:1px solid var(--border)}
+.stack-seg{display:flex;align-items:center;justify-content:center;font-size:11.5px;font-weight:700;color:#fff}
+.stack-legend{display:flex;flex-wrap:wrap;gap:14px 22px;margin-top:12px;font-size:13px}
+.stack-legend .li{display:flex;gap:8px;align-items:flex-start}
+.stack-legend .sw{flex:none;width:12px;height:12px;border-radius:3px;margin-top:3px}
+.stack-legend .tx strong{display:block}
+.stack-legend .tx span{color:var(--ink-2);font-size:12px}
+/* Table */
+.tbl-wrap{overflow-x:auto;border:1px solid var(--border);border-radius:10px}
+table{width:100%;border-collapse:collapse;font-size:13px;min-width:500px}
+thead th{text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:0.04em;color:var(--ink-muted);font-weight:600;padding:9px 14px;background:var(--surface-2);border-bottom:1px solid var(--border);white-space:nowrap}
+tbody td{padding:8px 14px;border-bottom:1px solid var(--border);white-space:nowrap}
+tbody tr:last-child td{border-bottom:none}
+td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
+tbody tr:hover{background:var(--surface-2)}
+.pos{color:var(--good)}
+.neg{color:var(--critical)}
+.flag{color:var(--ink-muted);font-size:11.5px}
+tfoot td{padding:9px 14px;font-weight:700;border-top:1px solid var(--border)}
+/* Alerts */
+.alerts{display:flex;flex-direction:column;gap:10px}
+.alert{display:flex;gap:12px;padding:12px 16px;border-radius:10px;border:1px solid var(--border);background:var(--surface);font-size:13.5px}
+.alert .badge{flex:none;font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;padding:3px 8px;border-radius:5px;height:fit-content;white-space:nowrap}
+.alert.crit .badge{background:color-mix(in srgb,var(--critical) 18%,transparent);color:var(--critical)}
+.alert.warn .badge{background:color-mix(in srgb,var(--warning) 22%,transparent);color:#8a5a00}
+:root:not([data-theme="light"]) .alert.warn .badge,:root[data-theme="dark"] .alert.warn .badge{color:var(--warning)}
+.alert.info .badge{background:color-mix(in srgb,var(--blue) 16%,transparent);color:var(--blue)}
+.alert.good .badge{background:color-mix(in srgb,var(--good) 18%,transparent);color:var(--good)}
+.alert p{margin:0;color:var(--ink-2)}
+.alert strong{color:var(--ink)}
+/* Proposal */
+.proposal{display:flex;flex-direction:column;gap:12px}
+.proposal .card{border:1px solid var(--border);border-radius:10px;padding:16px 18px;background:var(--surface)}
+.proposal .card .tag{display:inline-block;font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;color:var(--blue);margin-bottom:6px}
+.proposal .card h3{margin:0 0 6px;font-size:15px}
+.proposal .card p{margin:0;font-size:13.5px;color:var(--ink-2)}
+.proposal .card p+p{margin-top:6px}
+.tax-box{display:flex;gap:20px;flex-wrap:wrap;margin-top:10px;padding:11px 14px;background:var(--surface-2);border-radius:8px;border:1px solid var(--border)}
+.tax-box .cell .l{font-size:11px;color:var(--ink-muted);text-transform:uppercase;letter-spacing:0.04em}
+.tax-box .cell .v{font-size:15px;font-weight:700;font-variant-numeric:tabular-nums}
+/* Ticker cards */
+.ticker-card{border:1px solid var(--border);border-radius:12px;background:var(--surface);padding:18px 20px;margin-bottom:14px}
+.tc-head{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:8px 16px;margin-bottom:12px}
+.tc-name{display:flex;align-items:baseline;gap:8px}
+.tc-name strong{font-size:17px}
+.tc-name span{font-size:13px;color:var(--ink-muted)}
+.tc-position{font-size:12px;color:var(--ink-2);background:var(--surface-2);padding:4px 10px;border-radius:6px;white-space:nowrap}
+.tc-badge{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;padding:3px 10px;border-radius:999px}
+.tc-badge.buy-more{background:color-mix(in srgb,var(--good) 15%,transparent);color:var(--good)}
+.tc-badge.caution{background:color-mix(in srgb,var(--critical) 12%,transparent);color:var(--critical)}
+.metric-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(105px,1fr));gap:9px 12px;padding:11px 0;border-top:1px solid var(--border);border-bottom:1px solid var(--border);margin-bottom:12px}
+.metric-grid .m .l{display:block;font-size:10.5px;color:var(--ink-muted);text-transform:uppercase;letter-spacing:0.03em;margin-bottom:2px}
+.metric-grid .m .v{display:block;font-size:14px;font-weight:700;font-variant-numeric:tabular-nums}
+.metric-grid .m .v.flag{color:var(--warning)}
+.tc-analysis{font-size:13.5px;color:var(--ink-2);margin:0 0 12px}
+.tc-coverage{display:flex;flex-wrap:wrap;gap:6px}
+.cov-chip{font-size:11.5px;font-weight:600;padding:4px 9px;border-radius:999px;border:1px solid var(--border);white-space:nowrap}
+.cov-chip.buy{background:color-mix(in srgb,var(--good) 14%,transparent);color:var(--good);border-color:color-mix(in srgb,var(--good) 30%,transparent)}
+.cov-chip.hold{background:color-mix(in srgb,var(--warning) 20%,transparent);color:#8a5a00;border-color:color-mix(in srgb,var(--warning) 40%,transparent)}
+:root:not([data-theme="light"]) .cov-chip.hold,:root[data-theme="dark"] .cov-chip.hold{color:var(--warning)}
+.cov-chip.sell{background:color-mix(in srgb,var(--critical) 14%,transparent);color:var(--critical);border-color:color-mix(in srgb,var(--critical) 30%,transparent)}
+.cov-chip.none{background:var(--surface-2);color:var(--ink-muted)}
+.tc-note{font-size:11.5px;color:var(--ink-muted);margin-top:10px}
+/* Price targets */
+.pt-section{margin-top:12px;padding-top:12px;border-top:1px solid var(--border)}
+.pt-label{font-size:10.5px;color:var(--ink-muted);text-transform:uppercase;letter-spacing:0.04em;margin-bottom:8px}
+.pt-rows{display:flex;flex-direction:column;gap:7px}
+.pt-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.pt-row .cov-chip{min-width:200px}
+.pt-track{flex:1;height:8px;background:var(--surface-2);border-radius:4px;border:1px solid var(--border);position:relative;min-width:60px;overflow:hidden}
+.pt-fill{height:100%;border-radius:4px}
+.pt-fill.up{background:var(--good)}
+.pt-fill.dn{background:var(--critical);margin-left:auto}
+.pt-val{font-size:12.5px;font-weight:700;font-variant-numeric:tabular-nums;white-space:nowrap}
+.pt-val.up{color:var(--good)}
+.pt-val.dn{color:var(--critical)}
+.pt-val.flat{color:var(--ink-muted)}
+/* Price status bar */
+.ps-bar{display:flex;flex-wrap:wrap;gap:6px 20px;margin-top:10px;padding:9px 12px;background:var(--surface-2);border:1px solid var(--border);border-radius:8px;align-items:center}
+.ps-cell{display:flex;flex-direction:column;gap:1px}
+.ps-cell .l{font-size:10px;color:var(--ink-muted);text-transform:uppercase;letter-spacing:0.04em}
+.ps-cell .v{font-size:13.5px;font-weight:700;font-variant-numeric:tabular-nums}
+.ps-status{font-size:12px;font-weight:700;padding:3px 9px;border-radius:999px;white-space:nowrap}
+.ps-status.below{background:color-mix(in srgb,var(--good) 15%,transparent);color:var(--good)}
+.ps-status.above{background:color-mix(in srgb,var(--critical) 15%,transparent);color:var(--critical)}
+.ps-status.at{background:color-mix(in srgb,var(--warning) 15%,transparent);color:#8a5a00}
+:root:not([data-theme="light"]) .ps-status.at,:root[data-theme="dark"] .ps-status.at{color:var(--warning)}
+.ps-status.na{background:var(--surface-2);color:var(--ink-muted)}
+/* Summary table in Resumo */
+.sum-tbl thead th{background:var(--surface-2)}
+.sum-tbl .chip{display:inline-block;font-size:10.5px;font-weight:700;padding:2px 7px;border-radius:999px;white-space:nowrap}
+.sum-tbl .chip.below{background:color-mix(in srgb,var(--good) 15%,transparent);color:var(--good)}
+.sum-tbl .chip.above{background:color-mix(in srgb,var(--critical) 15%,transparent);color:var(--critical)}
+.sum-tbl .chip.at{background:color-mix(in srgb,var(--warning) 15%,transparent);color:#8a5a00}
+:root:not([data-theme="light"]) .sum-tbl .chip.at,:root[data-theme="dark"] .sum-tbl .chip.at{color:var(--warning)}
+.sum-tbl .chip.na{background:var(--surface-2);color:var(--ink-muted)}
+/* ETF DY tracking */
+.dy-track{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px 16px;margin-bottom:14px}
+.dy-track .dt-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px;flex-wrap:wrap;gap:6px}
+.dy-track .dt-head strong{font-size:15px}
+.dy-track .dt-head span{font-size:12px;color:var(--ink-muted)}
+.dy-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:8px}
+.dy-grid .dc .dl{font-size:10px;color:var(--ink-muted);text-transform:uppercase;letter-spacing:0.04em;margin-bottom:2px}
+.dy-grid .dc .dv{font-size:14px;font-weight:700;font-variant-numeric:tabular-nums}
+.dy-prog{margin-top:10px}
+.dy-prog-track{height:8px;background:var(--surface-2);border-radius:4px;border:1px solid var(--border);position:relative;overflow:hidden;margin-top:4px}
+.dy-prog-fill{height:100%;border-radius:4px;background:var(--good)}
+.dy-prog-fill.warn{background:var(--warning)}
+.dy-prog-fill.crit{background:var(--critical)}
+.dy-prog-label{display:flex;justify-content:space-between;font-size:11px;color:var(--ink-muted);margin-top:3px}
+/* Opportunities */
+.opp-card{border:1px solid var(--border);border-radius:12px;padding:18px 20px;background:var(--surface);margin-bottom:14px}
+.opp-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px;flex-wrap:wrap;gap:8px}
+.opp-ticker{display:flex;align-items:baseline;gap:8px}
+.opp-ticker strong{font-size:17px}
+.opp-ticker span{font-size:13px;color:var(--ink-muted)}
+.opp-tag{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;color:var(--blue);background:color-mix(in srgb,var(--blue) 12%,transparent);padding:3px 10px;border-radius:999px}
+.opp-thesis{font-size:13.5px;color:var(--ink-2);margin-bottom:10px}
+.opp-metrics{font-size:12.5px;color:var(--ink-muted);margin-bottom:10px;background:var(--surface-2);padding:8px 12px;border-radius:8px;border:1px solid var(--border)}
+.opp-size{margin-top:10px;padding-top:10px;border-top:1px solid var(--border);font-size:13px;color:var(--ink-2)}
+.opp-size strong{color:var(--ink)}
+/* Gaps box */
+.gaps{background:var(--surface-2);border:1px solid var(--border);border-radius:10px;padding:14px 18px}
+.gaps ul{margin:0;padding-left:18px;font-size:13px;color:var(--ink-2)}
+.gaps li{margin-bottom:6px}
+.gaps li:last-child{margin-bottom:0}
+/* Footer */
+footer.disclaimer{margin-top:8px;border-top:1px solid var(--border);background:var(--surface-2);padding:18px 20px 26px}
+footer.disclaimer .wrap{padding-top:0}
+footer.disclaimer p{font-size:12px;color:var(--ink-muted);margin:0 0 6px;max-width:90ch}
+footer.disclaimer p:last-child{margin-bottom:0}
+footer.disclaimer strong{color:var(--ink-2)}
+</style>
+
+<input type="radio" name="maintab" id="tab-resumo" checked>
+<input type="radio" name="maintab" id="tab-brasil">
+<input type="radio" name="maintab" id="tab-eua">
+
+<div class="wrap">
+
+<header class="page">
+  <div>
+    <h1>📊 Carteira Ion &amp; Avenue</h1>
+    <p class="sub">Relatório de Análise e Rebalanceamento de Portfólio · Private Wealth Management</p>
+  </div>
+  <div class="meta">
+    15/08/2026 · US$1 = R$5,1859 · Selic <strong>14,00% a.a.</strong> (Copom, 06/08/2026)
+  </div>
+</header>
+
+<div class="tabbar">
+  <label for="tab-resumo">Resumo</label>
+  <label for="tab-brasil">🇧🇷 Brasil</label>
+  <label for="tab-eua">🇺🇸 EUA</label>
+</div>
+
+<!-- ═══════ RESUMO ═══════ -->
+<div id="panel-resumo" class="tabpanel">
+
+  <section>
+    <h2>Visão geral</h2>
+    <div class="kpis">
+      <div class="kpi"><div class="label">Patrimônio total</div><div class="value num">R$ 374.589</div><div class="foot">Ion + Avenue consolidado em BRL</div></div>
+      <div class="kpi"><div class="label">Brasil · Ion</div><div class="value num">R$ 185.818</div><div class="foot num">49,6% da carteira</div></div>
+      <div class="kpi"><div class="label">EUA · Avenue</div><div class="value num">R$ 188.772</div><div class="foot num">50,4% · US$ 36.401</div></div>
+      <div class="kpi"><div class="label">Dividendos projetados/ano</div><div class="value num sm">≈ R$ 9.619</div><div class="foot num">2,57% do patrimônio</div></div>
+      <div class="kpi"><div class="label">Maior desvio do alvo</div><div class="value num" style="color:var(--critical)">+25,4 p.p.</div><div class="foot crit">Exposição EUA — o dobro do teto</div></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Alocação atual vs. faixa-alvo (perfil moderado)</h2>
+    <p class="lede">Faixa cinza = alvo. Barra colorida = posição atual. Traço = meio da faixa (referência de drift).</p>
+    <div class="bullet-chart">
+      <div class="bullet-row">
+        <div class="rh"><span class="nm">Renda fixa / caixa Brasil <span class="flag">(Tesouro Direto)</span></span><span class="vv num">35,7% · alvo 20–35%</span></div>
+        <div class="bullet-track"><div class="bullet-band" style="left:33.33%;width:25%"></div><div class="bullet-mid" style="left:45.83%"></div><div class="bullet-bar warn" style="width:59.43%"></div></div>
+      </div>
+      <div class="bullet-row">
+        <div class="rh"><span class="nm">Renda variável Brasil <span class="flag">(ações Ion)</span></span><span class="vv num">13,9% · alvo 20–35%</span></div>
+        <div class="bullet-track"><div class="bullet-band" style="left:33.33%;width:25%"></div><div class="bullet-mid" style="left:45.83%"></div><div class="bullet-bar warn" style="width:23.23%"></div></div>
+      </div>
+      <div class="bullet-row">
+        <div class="rh"><span class="nm">Exposição EUA <span class="flag">(ações + ETFs + caixa Avenue)</span></span><span class="vv num">50,4% · alvo 20–30%</span></div>
+        <div class="bullet-track"><div class="bullet-band" style="left:33.33%;width:16.67%"></div><div class="bullet-mid" style="left:41.67%"></div><div class="bullet-bar crit" style="width:84%"></div></div>
+      </div>
+    </div>
+    <div class="bullet-legend">
+      <span class="li"><span class="sw band"></span> Faixa-alvo</span>
+      <span class="li"><span class="sw tick"></span> Meio da faixa</span>
+      <span class="li"><span class="sw" style="background:var(--warning)"></span> Fora da faixa</span>
+      <span class="li"><span class="sw" style="background:var(--critical)"></span> Muito acima do teto</span>
+    </div>
+  </section>
+
+  <section>
+    <h2>Drift em relação ao meio da faixa</h2>
+    <div class="drift-chart">
+      <div class="drift-row"><div class="rh"><span class="nm">Renda fixa Brasil</span><span class="vv over num">+8,2 p.p.</span></div><div class="drift-track"><div class="drift-center"></div><div class="drift-bar over" style="left:50%;width:13.6%"></div></div></div>
+      <div class="drift-row"><div class="rh"><span class="nm">Renda variável Brasil</span><span class="vv under num">−13,6 p.p.</span></div><div class="drift-track"><div class="drift-center"></div><div class="drift-bar under" style="left:27.4%;width:22.6%"></div></div></div>
+      <div class="drift-row"><div class="rh"><span class="nm">Exposição EUA</span><span class="vv over num">+25,4 p.p.</span></div><div class="drift-track"><div class="drift-center"></div><div class="drift-bar over" style="left:50%;width:42.33%"></div></div><div class="drift-note">Escala: −30 a +30 p.p.</div></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Concentração dentro da Avenue</h2>
+    <div class="stack-bar">
+      <div class="stack-seg" style="flex-basis:53.93%;background:var(--blue)">53,9%</div>
+      <div class="stack-seg" style="flex-basis:29.50%;background:var(--orange)">29,5%</div>
+      <div class="stack-seg" style="flex-basis:4.87%;background:var(--aqua)">4,9%</div>
+      <div class="stack-seg" style="flex-basis:11.70%;background:var(--yellow)">11,7%</div>
+    </div>
+    <div class="stack-legend">
+      <div class="li"><span class="sw" style="background:var(--blue)"></span><span class="tx"><strong>Tech / semicondutores</strong><span>ASML, NVDA, SMCI, TSM, AAPL, GOOGL, MSFT, PLTR — 27,2% da carteira total</span></span></div>
+      <div class="li"><span class="sw" style="background:var(--orange)"></span><span class="tx"><strong>ETFs de covered call</strong><span>XYLD, QYLD, JEPI, JEPQ, QQQI — 91% da renda de dividendo da Avenue</span></span></div>
+      <div class="li"><span class="sw" style="background:var(--aqua)"></span><span class="tx"><strong>Renda tradicional</strong><span>SPHD — dividendo real, sem opções</span></span></div>
+      <div class="li"><span class="sw" style="background:var(--yellow)"></span><span class="tx"><strong>Índice + outros</strong><span>VOO, TTWO, EIMI, caixa</span></span></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Alertas de risco</h2>
+    <div class="alerts">
+      <div class="alert crit"><span class="badge">Crítico</span><p><strong>Concentração de país/moeda em ~50,4%.</strong> Exposição EUA (100% USD) é o dobro do teto sugerido de 30%.</p></div>
+      <div class="alert warn"><span class="badge">Atenção</span><p><strong>27,2% da carteira em tech/semicondutores</strong> — SMCI e PLTR com valuations mais questionados do grupo (ver aba EUA).</p></div>
+      <div class="alert warn"><span class="badge">Atenção</span><p><strong>5 ETFs de covered call somam 29,5% da Avenue</strong> e 91% da renda de dividendo — vender por eficiência fiscal troca renda recorrente por economia de imposto.</p></div>
+      <div class="alert good"><span class="badge">Oportunidade</span><p><strong>SMCI e PLTR são os candidatos mais bem fundamentados para reduzir:</strong> zero dividendo, baixo imposto, e sinal de cautela dos bancos (SMCI: Sell/GS, UW/JPM; PLTR: P/E ~153x).</p></div>
+      <div class="alert info"><span class="badge">TTWO — Comprar mais?</span><p><strong>Sim, com limite.</strong> 5/5 bancos Buy/Overweight, alvo médio ~US$296 (+19,8% do preço atual ~US$247). GTA VI nov/2026 é o catalisador. Sugestão: aporte adicional de US$1.000–2.000, elevando para ~8–9% da Avenue. Limite duro: 10% — empresa no prejuízo, zero dividendo, risco de atraso no lançamento.</p></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Dividendos — resumo</h2>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Bloco</th><th class="num">Renda proj./ano</th><th class="num">% patrimônio</th></tr></thead>
+        <tbody>
+          <tr><td>Ion — ações (parte com 15% JCP retido)</td><td class="num">R$ 4.279</td><td class="num">1,14%</td></tr>
+          <tr><td>Avenue — todas as posições (líquido 30% withholding)</td><td class="num">≈ R$ 5.340 <span class="flag">(US$ 1.030)</span></td><td class="num">1,43%</td></tr>
+        </tbody>
+        <tfoot><tr><td>Total combinado</td><td class="num">≈ R$ 9.619</td><td class="num">2,57%</td></tr></tfoot>
+      </table>
+    </div>
+    <p class="lede" style="margin-top:10px">2,57% a.a. em dividendo fica bem abaixo da Selic (14,00%) — esperado, pois dividendo não é retorno total. Achado chave: ETFs de covered call respondem por 91% de toda a renda da Avenue.</p>
+  </section>
+
+  <section>
+    <h2>Proposta de rebalanceamento</h2>
+    <p class="lede">Ordem: menor dano total (imposto + renda perdida + tensão fundamentalista). Ativos nomeados.</p>
+    <div class="proposal">
+
+      <div class="card">
+        <span class="tag">Prioridade 0 · TTWO — aporte adicional recomendado</span>
+        <h3>Comprar mais TTWO (US$1.000–2.000) antes do GTA VI</h3>
+        <p>Goldman US$285 · Morgan Stanley US$265 · UBS US$300 · JPMorgan US$310 · BofA US$320 — todos Buy/Overweight. Alvo médio ~US$296 implica +19,8% de upside do preço atual (~US$247). Catalisador de prazo definido: GTA VI novembro/2026 — estimativas de &gt;35 milhões de unidades no primeiro ano. O aporte pode vir do caixa idle em USD na Avenue, sem necessidade de novo câmbio.</p>
+        <p><strong style="color:var(--ink)">Risco:</strong> empresa atualmente no prejuízo, zero dividendo, histórico de atraso. Não ultrapassar 10% da Avenue em TTWO. Upside de +19,8% para o alvo médio (US$247→US$296).</p>
+      </div>
+
+      <div class="card">
+        <span class="tag">Prioridade 1 · custo zero</span>
+        <h3>Aportes novos → ITUB4 e PETR4 (Ion) · VALE3 em segundo plano</h3>
+        <p>RV Brasil está −13,6 p.p. abaixo do alvo. ITUB4 (yield ~9,1%, JPMorgan OW com alvo ADR US$10) e PETR4 (yield ~7,1%, P/L ~4x, MS/JPM Overweight) são as melhores entradas agora. VALE3: mantenha o que tem mas não priorize para novo aporte — Goldman, MS e UBS rebaixaram após alta de +70% desde 2025.</p>
+      </div>
+
+      <div class="card">
+        <span class="tag">Prioridade 2 · melhor trade-off (baixo imposto, zero renda perdida)</span>
+        <h3>Vender: SMCI + PLTR → Comprar: ITUB4, PETR4 (Ion)</h3>
+        <p>SMCI: Goldman Sell (US$27) e JPMorgan Underweight (US$23) — ambos abaixo do preço atual (~US$39,50), com histórico de questões contábeis. PLTR: P/E ~153x, EV/EBITDA ~156x. Nenhuma paga dividendo. GOOGL pode entrar opcionalmente para realizar a perda (−13,06%) e compensar ganhos de outras posições.</p>
+        <div class="tax-box">
+          <div class="cell"><div class="l">Valor liberado</div><div class="v num">US$ 2.988 ≈ R$ 15.498</div></div>
+          <div class="cell"><div class="l">Imposto GCAP exterior (15%)</div><div class="v num" style="color:var(--critical)">≈ R$ 39</div></div>
+          <div class="cell"><div class="l">Renda de dividendo perdida</div><div class="v num" style="color:var(--good)">≈ US$ 2/ano</div></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <span class="tag">Prioridade 3 · opcional, pequena perda de renda</span>
+        <h3>Vender: JEPQ → Comprar: ITUB4, PETR4 (Ion)</h3>
+        <p>Dentro do cluster de covered call, JEPQ é o candidato mais defensável: usa ELNs (dívida não garantida de bancos como contraparte), diferente de QQQI que usa opções diretas e preserva mais upside.</p>
+        <div class="tax-box">
+          <div class="cell"><div class="l">Valor liberado</div><div class="v num">US$ 1.047 ≈ R$ 5.429</div></div>
+          <div class="cell"><div class="l">Imposto (15%)</div><div class="v num" style="color:var(--critical)">≈ R$ 5</div></div>
+          <div class="cell"><div class="l">Renda perdida</div><div class="v num" style="color:var(--critical)">≈ US$ 124/ano</div></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <span class="tag">Não recomendado agora</span>
+        <h3>XYLD, QYLD, JEPI ou SPHD por eficiência tributária</h3>
+        <p>Concentram a maior parte da renda de dividendo da carteira. Só considerar se precisar acelerar o rebalanceamento além do que os aportes permitem — e mesmo assim XYLD/QYLD antes de JEPI.</p>
+      </div>
+
+    </div>
+    <p class="drift-note" style="margin-top:12px"><strong style="color:var(--ink)">Gap restante:</strong> Prioridade 2+3 liberam ≈R$20.927 dos ≈R$76.395 necessários (~27%). O resto fecha com os aportes da Prioridade 1 ao longo dos próximos meses.</p>
+  </section>
+
+  <section>
+    <h2>Posições — Preço médio vs. cotação atual vs. alvos dos analistas</h2>
+    <p class="lede">PM = custo médio estimado pelo ganho/perda acumulado. Alvo = consenso ou banco mais representativo. <span style="font-weight:600;color:var(--good)">▲ Abaixo do alvo</span> = upside disponível · <span style="font-weight:600;color:var(--critical)">▼ Acima do alvo</span> = preço atual superou alvo dos analistas · <span style="font-weight:600;color:#8a5a00">→ No alvo</span> = dentro de ±5%.</p>
+    <div class="tbl-wrap">
+      <table class="sum-tbl">
+        <thead>
+          <tr>
+            <th>Ativo</th><th>Mercado</th><th class="num">Preço médio (PM)</th><th class="num">Cotação atual</th><th class="num">Var. s/ PM</th><th class="num">Alvo analistas</th><th class="num">Upside p/ alvo</th><th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="group-head"><td colspan="8">🇧🇷 Brasil — Ações</td></tr>
+          <tr><td><strong>PETR4</strong></td><td>Ion</td><td class="num">R$ 30,32</td><td class="num">R$ 41,90</td><td class="num pos">+38,2%</td><td class="num">R$ 51,70</td><td class="num pos">+23,4%</td><td><span class="chip below">▲ Abaixo do alvo</span></td></tr>
+          <tr><td><strong>ITUB4</strong></td><td>Ion</td><td class="num">R$ 40,47</td><td class="num">R$ 40,00</td><td class="num neg">−1,2%</td><td class="num">R$ 51,20</td><td class="num pos">+28,0%</td><td><span class="chip below">▲ Abaixo do alvo</span></td></tr>
+          <tr><td><strong>VALE3</strong></td><td>Ion</td><td class="num">R$ 58,38</td><td class="num">R$ 60,00</td><td class="num pos">+2,8%</td><td class="num">R$ 49,00 <span class="flag">(GS/MS/UBS)</span></td><td class="num neg">−18,3%</td><td><span class="chip above">▼ Acima do alvo</span></td></tr>
+          <tr><td><strong>CMIG4</strong></td><td>Ion</td><td class="num">R$ 10,42</td><td class="num">R$ 10,30</td><td class="num neg">−1,1%</td><td class="num">R$ 14,60 <span class="flag">(XP)</span></td><td class="num pos">+41,7%</td><td><span class="chip below">▲ Abaixo do alvo</span></td></tr>
+          <tr><td><strong>TAEE11</strong></td><td>Ion</td><td class="num">R$ 39,26</td><td class="num">R$ 38,21</td><td class="num neg">−2,7%</td><td class="num">—</td><td class="num">—</td><td><span class="chip na">Sem alvo intl.</span></td></tr>
+          <tr class="group-head"><td colspan="8">🇺🇸 EUA — Ações</td></tr>
+          <tr><td><strong>MSFT</strong></td><td>Avenue</td><td class="num">US$ 433</td><td class="num">US$ 495</td><td class="num pos">+14,3%</td><td class="num">US$ 622 <span class="flag">(média GS/JPM/MS)</span></td><td class="num pos">+25,7%</td><td><span class="chip below">▲ Abaixo do alvo</span></td></tr>
+          <tr><td><strong>ASML</strong></td><td>Avenue</td><td class="num">US$ 1.003</td><td class="num">US$ 1.748</td><td class="num pos">+74,2%</td><td class="num">US$ 1.882 <span class="flag">(consenso)</span></td><td class="num pos">+7,7%</td><td><span class="chip below">▲ Abaixo do alvo</span></td></tr>
+          <tr><td><strong>NVDA</strong></td><td>Avenue</td><td class="num">US$ 145</td><td class="num">US$ 226</td><td class="num pos">+56,1%</td><td class="num">US$ 293 <span class="flag">(média GS/MS/BofA/UBS)</span></td><td class="num pos">+29,6%</td><td><span class="chip below">▲ Abaixo do alvo</span></td></tr>
+          <tr><td><strong>TSM</strong></td><td>Avenue</td><td class="num">US$ 288</td><td class="num">US$ 430</td><td class="num pos">+49,3%</td><td class="num">US$ 456 <span class="flag">(média GS/JPM)</span></td><td class="num pos">+6,0%</td><td><span class="chip below">▲ Abaixo do alvo</span></td></tr>
+          <tr><td><strong>AAPL</strong></td><td>Avenue</td><td class="num">US$ 260</td><td class="num">US$ 306</td><td class="num pos">+17,6%</td><td class="num">US$ 335 <span class="flag">(média GS/MS/JPM)</span></td><td class="num pos">+9,5%</td><td><span class="chip below">▲ Abaixo do alvo</span></td></tr>
+          <tr><td><strong>GOOGL</strong></td><td>Avenue</td><td class="num">US$ 398</td><td class="num">US$ 346</td><td class="num neg">−13,1%</td><td class="num">US$ 400 <span class="flag">(MS)</span></td><td class="num pos">+15,6%</td><td><span class="chip below">▲ Abaixo do alvo</span></td></tr>
+          <tr><td><strong>TTWO</strong></td><td>Avenue</td><td class="num">US$ 224</td><td class="num">US$ 247</td><td class="num pos">+10,2%</td><td class="num">US$ 296 <span class="flag">(média 5 bancos)</span></td><td class="num pos">+19,8%</td><td><span class="chip below">▲ Abaixo do alvo</span></td></tr>
+          <tr><td><strong>SMCI</strong></td><td>Avenue</td><td class="num">US$ 35</td><td class="num">US$ 39,50</td><td class="num pos">+12,9%</td><td class="num">US$ 25 <span class="flag">(média GS Sell/JPM UW)</span></td><td class="num neg">−36,7%</td><td><span class="chip above">▼ Acima do alvo</span></td></tr>
+          <tr><td><strong>PLTR</strong></td><td>Avenue</td><td class="num">US$ 170</td><td class="num">US$ 174</td><td class="num pos">+2,6%</td><td class="num">US$ 212 <span class="flag">(média UBS/MS)</span></td><td class="num pos">+21,8%</td><td><span class="chip below">▲ Abaixo do alvo</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="drift-note" style="margin-top:8px">PM calculado com cotações de 15/08/2026 e ganho/perda acumulado do extrato. Para VALE3 o "alvo" é a média dos bancos bearish (GS/MS/UBS), que estão abaixo do consenso total — JPMorgan é exceção construtiva (US$21 → R$62). ASML e TSM: upside para alvos de analistas estreitou bastante com a forte valorização YTD (+74% e +49% resp.) — posições maduras. CMIG4: maior muda no período, de "no alvo" para "bem abaixo do alvo" após queda para R$10,30.</p>
+  </section>
+
+  <section>
+    <h2>Suposições e lacunas</h2>
+    <div class="gaps">
+      <ul>
+        <li><strong>Câmbio histórico dos aportes na Avenue</strong> — usei câmbio de hoje para custo e valor. Razoável para vendas propostas (posições recentes), menos preciso para ASML/NVDA/TSM/AAPL/MSFT (nenhuma delas está na proposta de venda).</li>
+        <li><strong>Ion pode estar incompleto</strong> — apenas Tesouro Direto e 5 ações via print. FIIs ou outros saldos distorceriam a fatia Brasil.</li>
+        <li><strong>Múltiplos e yields de pesquisa de mercado</strong> (Status Invest / stockanalysis.com). Onde fontes divergiram, mostrei faixa.</li>
+        <li><strong>CMIG4 e TAEE11 sem cobertura de banco internacional</strong> — cobertura só doméstica (XP, Genial).</li>
+        <li><strong>EIMI pode ser acumulativa</strong> — confirmar na Avenue qual classe está detida.</li>
+      </ul>
+    </div>
+  </section>
+
+</div><!-- /panel-resumo -->
+
+<!-- ═══════ BRASIL ═══════ -->
+<div id="panel-brasil" class="tabpanel">
+
+  <input type="radio" name="brtab" id="brtab-acoes" checked>
+  <input type="radio" name="brtab" id="brtab-rf">
+  <input type="radio" name="brtab" id="brtab-opps">
+  <div class="subtabbar">
+    <label for="brtab-acoes">Ações (5)</label>
+    <label for="brtab-rf">Renda Fixa</label>
+    <label for="brtab-opps">Oportunidades</label>
+  </div>
+
+  <!-- BR → Ações -->
+  <div id="brtab-panel-acoes" class="subtabpanel">
+    <section>
+      <h2>Brasil — Ações</h2>
+      <p class="lede">Métricas de 15/08/2026, fonte Status Invest cruzada com Fundamentus/Investidor10. Preços-alvo em ADR convertidos por US$1=R$5,1859 onde aplicável.</p>
+
+      <!-- PETR4 -->
+      <div class="ticker-card">
+        <div class="tc-head">
+          <div class="tc-name"><strong>PETR4</strong><span>Petrobras PN</span></div>
+          <div class="tc-position">R$ 13.166 · 3,51% da carteira · +38,21%</div>
+        </div>
+        <div class="metric-grid">
+          <div class="m"><span class="l">Mkt Cap</span><span class="v">R$ 577,75 bi</span></div>
+          <div class="m"><span class="l">Volume/dia</span><span class="v">R$ 1,58 bi</span></div>
+          <div class="m"><span class="l">Div. Yield</span><span class="v">7,10%</span></div>
+          <div class="m"><span class="l">P/L</span><span class="v">4,07</span></div>
+          <div class="m"><span class="l">EV/EBITDA</span><span class="v">2,24</span></div>
+          <div class="m"><span class="l">P/VPA</span><span class="v">1,13</span></div>
+          <div class="m"><span class="l">ROE</span><span class="v">27,73%</span></div>
+          <div class="m"><span class="l">ROA</span><span class="v">10,43%</span></div>
+          <div class="m"><span class="l">ROIC</span><span class="v">11,11%</span></div>
+          <div class="m"><span class="l">Mg. Bruta</span><span class="v">50,60%</span></div>
+          <div class="m"><span class="l">Mg. EBITDA</span><span class="v">72,62%</span></div>
+          <div class="m"><span class="l">Mg. Líquida</span><span class="v">24,32%</span></div>
+        </div>
+        <p class="tc-analysis">Múltiplos historicamente baixos (P/L ~4x, EV/EBITDA ~2,2x) e yield elevado sustentados por Brent favorável e política de dividendos ligada ao FCL. Risco central: governança/interferência política, capex de refino, câmbio. Consenso (11 analistas): Buy, alvo médio R$51,70.</p>
+        <div class="tc-coverage">
+          <span class="cov-chip buy">Morgan Stanley · Overweight</span>
+          <span class="cov-chip buy">JPMorgan · Overweight (ADR alvo US$23)</span>
+        </div>
+        <div class="ps-bar">
+          <div class="ps-cell"><span class="l">Preço médio</span><span class="v">R$ 30,32</span></div>
+          <div class="ps-cell"><span class="l">Cotação atual</span><span class="v">R$ 41,90</span></div>
+          <div class="ps-cell"><span class="l">Alvo (consenso)</span><span class="v">R$ 51,70</span></div>
+          <div class="ps-cell"><span class="l">Status</span><span class="v ps-status below">▲ +23,4% p/ alvo</span></div>
+        </div>
+        <div class="pt-section">
+          <div class="pt-label">Preços-alvo vs. cotação atual (~R$41,90)</div>
+          <div class="pt-rows">
+            <div class="pt-row"><span class="cov-chip buy" style="min-width:0">JPMorgan · OW</span><div class="pt-track"><div class="pt-fill up" style="width:21%"></div></div><span class="pt-val up">ADR US$23 → R$47 · ▲ +12,2%</span></div>
+            <div class="pt-row"><span class="cov-chip buy" style="min-width:0">Consenso (11 anal.)</span><div class="pt-track"><div class="pt-fill up" style="width:38%"></div></div><span class="pt-val up">R$51,70 · ▲ +23,4%</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ITUB4 -->
+      <div class="ticker-card">
+        <div class="tc-head">
+          <div class="tc-name"><strong>ITUB4</strong><span>Itaú Unibanco PN</span></div>
+          <div class="tc-position">R$ 22.077 · 5,89% da carteira · ≈ −1,15%</div>
+        </div>
+        <div class="metric-grid">
+          <div class="m"><span class="l">Mkt Cap</span><span class="v">R$ 441,28 bi</span></div>
+          <div class="m"><span class="l">Volume/dia</span><span class="v">R$ 876,6 mi</span></div>
+          <div class="m"><span class="l">Div. Yield</span><span class="v">9,09%</span></div>
+          <div class="m"><span class="l">P/L</span><span class="v">9,18</span></div>
+          <div class="m"><span class="l">EV/EBITDA</span><span class="v flag">7,21 ①</span></div>
+          <div class="m"><span class="l">P/VPA</span><span class="v">1,97</span></div>
+          <div class="m"><span class="l">ROE</span><span class="v">21,50%</span></div>
+          <div class="m"><span class="l">ROA</span><span class="v">1,46%</span></div>
+          <div class="m"><span class="l">ROIC</span><span class="v flag">N/D ①</span></div>
+          <div class="m"><span class="l">Mg. Bruta</span><span class="v">37,23%</span></div>
+          <div class="m"><span class="l">Mg. EBITDA</span><span class="v flag">15,86% ①</span></div>
+          <div class="m"><span class="l">Mg. Líquida</span><span class="v">12,13%</span></div>
+        </div>
+        <p class="tc-analysis">Maior banco privado do Brasil, ROE ~21,5%, yield ~9,1%, beneficiado pela Selic alta. P/VPA ~2x — prêmio de qualidade. Riscos: corte de Selic, qualidade de crédito, risco macro/político. Consenso (17 analistas): Buy, alvo médio R$51,20.</p>
+        <div class="tc-coverage">
+          <span class="cov-chip buy">JPMorgan · Overweight (ADR alvo US$10, elevado de US$9)</span>
+        </div>
+        <div class="ps-bar">
+          <div class="ps-cell"><span class="l">Preço médio</span><span class="v">R$ 40,47</span></div>
+          <div class="ps-cell"><span class="l">Cotação atual</span><span class="v">R$ 40,00</span></div>
+          <div class="ps-cell"><span class="l">Alvo (consenso)</span><span class="v">R$ 51,20</span></div>
+          <div class="ps-cell"><span class="l">Status</span><span class="v ps-status below">▲ +28,0% p/ alvo</span></div>
+        </div>
+        <div class="pt-section">
+          <div class="pt-label">Preços-alvo vs. cotação atual (~R$40)</div>
+          <div class="pt-rows">
+            <div class="pt-row"><span class="cov-chip buy" style="min-width:0">JPMorgan · OW</span><div class="pt-track"><div class="pt-fill up" style="width:15%"></div></div><span class="pt-val up">ADR US$10 → R$51,86 · ▲ +29,7%</span></div>
+            <div class="pt-row"><span class="cov-chip buy" style="min-width:0">Consenso (17 anal.)</span><div class="pt-track"><div class="pt-fill up" style="width:40%"></div></div><span class="pt-val up">R$51,20 · ▲ +28,0%</span></div>
+          </div>
+        </div>
+        <p class="tc-note">① EV/EBITDA, Mg. EBITDA e ROIC não são métricas padronizadas para bancos — usar com cautela.</p>
+      </div>
+
+      <!-- VALE3 -->
+      <div class="ticker-card">
+        <div class="tc-head">
+          <div class="tc-name"><strong>VALE3</strong><span>Vale ON</span></div>
+          <div class="tc-position">R$ 5.428 · 1,45% da carteira · +2,77%</div>
+        </div>
+        <div class="metric-grid">
+          <div class="m"><span class="l">Mkt Cap</span><span class="v">R$ 317,44 bi</span></div>
+          <div class="m"><span class="l">Volume/dia</span><span class="v">R$ 1,24 bi</span></div>
+          <div class="m"><span class="l">Div. Yield</span><span class="v">7,87%</span></div>
+          <div class="m"><span class="l">P/L</span><span class="v flag">30,52 ②</span></div>
+          <div class="m"><span class="l">EV/EBITDA</span><span class="v">4,99</span></div>
+          <div class="m"><span class="l">P/VPA</span><span class="v">1,61</span></div>
+          <div class="m"><span class="l">ROE</span><span class="v flag">5,27% ②</span></div>
+          <div class="m"><span class="l">ROA</span><span class="v">2,24%</span></div>
+          <div class="m"><span class="l">ROIC</span><span class="v">1,60%</span></div>
+          <div class="m"><span class="l">Mg. Bruta</span><span class="v">34,92%</span></div>
+          <div class="m"><span class="l">Mg. EBITDA</span><span class="v">35,43%</span></div>
+          <div class="m"><span class="l">Mg. Líquida</span><span class="v">4,75%</span></div>
+        </div>
+        <p class="tc-analysis">EV/EBITDA baixo (~5x) mas rentabilidade comprimida pela fraqueza do minério de ferro. Riscos: demanda chinesa, passivos Mariana/Samarco, capex em cobre. <strong style="color:var(--ink)">Cobertura ficou mais cautelosa em 2026</strong> após alta de +70% desde 2025.</p>
+        <div class="tc-coverage">
+          <span class="cov-chip sell">Goldman Sachs · Neutral (rebaixado, ADR US$16)</span>
+          <span class="cov-chip sell">Morgan Stanley · Equal-Weight (rebaixado, ADR US$16,50)</span>
+          <span class="cov-chip hold">UBS · Neutral (ADR US$16,50)</span>
+          <span class="cov-chip buy">JPMorgan · Overweight (ADR US$21)</span>
+        </div>
+        <div class="ps-bar">
+          <div class="ps-cell"><span class="l">Preço médio</span><span class="v">R$ 58,38</span></div>
+          <div class="ps-cell"><span class="l">Cotação atual</span><span class="v">R$ 60,00</span></div>
+          <div class="ps-cell"><span class="l">Alvo (GS/MS/UBS)</span><span class="v">R$ 49,00</span></div>
+          <div class="ps-cell"><span class="l">Status</span><span class="v ps-status above">▼ Acima da maioria dos alvos</span></div>
+        </div>
+        <div class="pt-section">
+          <div class="pt-label">Preços-alvo vs. cotação atual (~R$60) — maioria abaixo</div>
+          <div class="pt-rows">
+            <div class="pt-row"><span class="cov-chip sell" style="min-width:0">Goldman · Neutral</span><div class="pt-track" style="direction:rtl"><div class="pt-fill dn" style="width:31%"></div></div><span class="pt-val dn">US$16 → R$47 · ▼ −21,7%</span></div>
+            <div class="pt-row"><span class="cov-chip sell" style="min-width:0">MS · Equal-Weight</span><div class="pt-track" style="direction:rtl"><div class="pt-fill dn" style="width:27%"></div></div><span class="pt-val dn">US$16,50 → R$49 · ▼ −18,3%</span></div>
+            <div class="pt-row"><span class="cov-chip hold" style="min-width:0">UBS · Neutral</span><div class="pt-track" style="direction:rtl"><div class="pt-fill dn" style="width:27%"></div></div><span class="pt-val dn">US$16,50 → R$49 · ▼ −18,3%</span></div>
+            <div class="pt-row"><span class="cov-chip buy" style="min-width:0">JPMorgan · OW</span><div class="pt-track"><div class="pt-fill up" style="width:5%"></div></div><span class="pt-val up">US$21 → R$62 · ▲ +3,3%</span></div>
+          </div>
+        </div>
+        <p class="tc-note">② Outra fonte mostra P/L 21,19 e ROE 7,31% — divergência entre plataformas por janela do lucro usado.</p>
+      </div>
+
+      <!-- CMIG4 -->
+      <div class="ticker-card">
+        <div class="tc-head">
+          <div class="tc-name"><strong>CMIG4</strong><span>Cemig PN</span></div>
+          <div class="tc-position">R$ 7.045 · 1,88% da carteira · −1,11%</div>
+        </div>
+        <div class="metric-grid">
+          <div class="m"><span class="l">Mkt Cap</span><span class="v">R$ 33,7–33,8 bi</span></div>
+          <div class="m"><span class="l">Volume/dia</span><span class="v">R$ 116–139 mi</span></div>
+          <div class="m"><span class="l">Div. Yield</span><span class="v flag">8,0–12,4% ③</span></div>
+          <div class="m"><span class="l">P/L</span><span class="v">6,0–6,4</span></div>
+          <div class="m"><span class="l">EV/EBITDA</span><span class="v">~6,3</span></div>
+          <div class="m"><span class="l">P/VPA</span><span class="v">1,00–1,01</span></div>
+          <div class="m"><span class="l">ROE</span><span class="v">15,7–16,8%</span></div>
+          <div class="m"><span class="l">ROA</span><span class="v">6,5–7,1%</span></div>
+          <div class="m"><span class="l">ROIC</span><span class="v">12,2–12,6%</span></div>
+          <div class="m"><span class="l">Mg. Bruta</span><span class="v">15,8–16,4%</span></div>
+          <div class="m"><span class="l">Mg. EBITDA</span><span class="v flag">14–19% ③</span></div>
+          <div class="m"><span class="l">Mg. Líquida</span><span class="v">10,5–11,2%</span></div>
+        </div>
+        <p class="tc-analysis">Utility estatal mineira, negocia perto do valor patrimonial (P/VPA ~1x). Tese de privatização no radar sem cronograma — depende da eleição estadual out/2026. Risco: alavancagem dívida líq./EBITDA ~5,8x. <strong style="color:var(--ink)">Sem cobertura de banco internacional.</strong></p>
+        <div class="tc-coverage">
+          <span class="cov-chip hold">XP (doméstico) · Neutro, alvo R$14,60</span>
+          <span class="cov-chip sell">Genial (doméstico) · Vender</span>
+        </div>
+        <div class="ps-bar">
+          <div class="ps-cell"><span class="l">Preço médio</span><span class="v">R$ 10,42</span></div>
+          <div class="ps-cell"><span class="l">Cotação atual</span><span class="v">R$ 10,30</span></div>
+          <div class="ps-cell"><span class="l">Alvo (XP)</span><span class="v">R$ 14,60</span></div>
+          <div class="ps-cell"><span class="l">Status</span><span class="v ps-status below">▲ +41,7% p/ alvo</span></div>
+        </div>
+        <div class="pt-section">
+          <div class="pt-label">Preços-alvo vs. cotação atual (~R$10,30)</div>
+          <div class="pt-rows">
+            <div class="pt-row"><span class="cov-chip hold" style="min-width:0">XP · Neutro</span><div class="pt-track"><div class="pt-fill up" style="width:58%"></div></div><span class="pt-val up">R$14,60 · ▲ +41,7%</span></div>
+            <div class="pt-row"><span class="cov-chip none" style="min-width:0">Sem cobertura internacional</span><div class="pt-track"></div><span class="pt-val flat">N/D</span></div>
+          </div>
+        </div>
+        <p class="tc-note">③ Yield e margem EBITDA com dispersão grande entre fontes — mostrada como faixa.</p>
+      </div>
+
+      <!-- TAEE11 -->
+      <div class="ticker-card">
+        <div class="tc-head">
+          <div class="tc-name"><strong>TAEE11</strong><span>Taesa (units)</span></div>
+          <div class="tc-position">R$ 4.516 · 1,21% da carteira · −2,67%</div>
+        </div>
+        <div class="metric-grid">
+          <div class="m"><span class="l">Mkt Cap</span><span class="v">R$ 13,0–13,2 bi</span></div>
+          <div class="m"><span class="l">Volume/dia</span><span class="v">R$ 74–87 mi</span></div>
+          <div class="m"><span class="l">Div. Yield</span><span class="v flag">8,6–10,2% ③</span></div>
+          <div class="m"><span class="l">P/L</span><span class="v">8,1–8,3</span></div>
+          <div class="m"><span class="l">EV/EBITDA</span><span class="v">7,8–9,8</span></div>
+          <div class="m"><span class="l">P/VPA</span><span class="v">1,63–1,72</span></div>
+          <div class="m"><span class="l">ROE</span><span class="v">19,7–23,1%</span></div>
+          <div class="m"><span class="l">ROA</span><span class="v">6,7–7,2%</span></div>
+          <div class="m"><span class="l">ROIC</span><span class="v">13,4–14,5%</span></div>
+          <div class="m"><span class="l">Mg. Bruta</span><span class="v">54,8–60,8%</span></div>
+          <div class="m"><span class="l">Mg. EBITDA</span><span class="v flag">50,6–66,8% ③</span></div>
+          <div class="m"><span class="l">Mg. Líquida</span><span class="v">33,5–36,3%</span></div>
+        </div>
+        <p class="tc-analysis">Transmissora pura, receita contratada de longo prazo corrigida pela inflação — yield médio ~10,5% em 5 anos, uma das políticas de dividendo mais consistentes da bolsa. Avalia leilões seletivos da Aneel (fev e out/2026). Riscos: alavancagem, crescimento limitado fora de leilões. <strong style="color:var(--ink)">Sem cobertura de banco internacional.</strong></p>
+        <div class="tc-coverage">
+          <span class="cov-chip none">Sem cobertura internacional identificada</span>
+        </div>
+        <div class="ps-bar">
+          <div class="ps-cell"><span class="l">Preço médio</span><span class="v">R$ 39,26</span></div>
+          <div class="ps-cell"><span class="l">Cotação atual</span><span class="v">R$ 38,21</span></div>
+          <div class="ps-cell"><span class="l">Alvo</span><span class="v">—</span></div>
+          <div class="ps-cell"><span class="l">Status</span><span class="v ps-status na">Sem alvo intl.</span></div>
+        </div>
+        <div class="pt-section">
+          <div class="pt-label">Preços-alvo</div>
+          <div class="pt-rows">
+            <div class="pt-row"><span class="cov-chip none" style="min-width:0">Sem cobertura internacional</span><div class="pt-track"></div><span class="pt-val flat">N/D — acompanhar XP/Genial</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div><!-- /brtab-panel-acoes -->
+
+  <!-- BR → Renda Fixa -->
+  <div id="brtab-panel-rf" class="subtabpanel">
+    <section>
+      <h2>Brasil — Renda Fixa</h2>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>Título</th><th class="num">Saldo atual</th><th class="num">% carteira</th><th class="num">Rendimento período</th></tr></thead>
+          <tbody>
+            <tr><td>Tesouro Selic 2031</td><td class="num">R$ 123.004</td><td class="num">32,84%</td><td class="num pos">pós-fixado (Selic)</td></tr>
+            <tr><td>Tesouro IPCA+ 2029</td><td class="num">R$ 10.581</td><td class="num">2,82%</td><td class="num pos">IPCA + prêmio</td></tr>
+          </tbody>
+          <tfoot><tr><td>Total Tesouro Direto</td><td class="num">R$ 133.586</td><td class="num">35,66%</td><td class="num pos">+R$7.765 no período</td></tr></tfoot>
+        </table>
+      </div>
+      <p class="lede" style="margin-top:12px">A posição de Tesouro Direto cumpre o papel de âncora de liquidez e proteção contra Selic alta. O Tesouro Selic 2031 rende exatamente a Selic (14% bruto) com IR regressivo (15% para posições com prazo &gt;2 anos já consolidado). O IPCA+ 2029 protege contra inflação acima do esperado.</p>
+      <p class="lede"><strong style="color:var(--ink)">Recomendação:</strong> a fatia de renda fixa (35,7%) está levemente acima da faixa-alvo (20–35%). Não aumentar mais. Ao rebalancear, o produto das vendas propostas vai para renda variável Brasil — não renda fixa.</p>
+    </section>
+  </div><!-- /brtab-panel-rf -->
+
+  <!-- BR → Oportunidades -->
+  <div id="brtab-panel-opps" class="subtabpanel">
+    <section>
+      <h2>Brasil — Oportunidades de novo aporte</h2>
+      <p class="lede">Posições não detidas atualmente. Research Note — não é recomendação de compra imediata. Confirme valuation e tese com contador/advisor antes de agir.</p>
+
+      <div class="opp-card">
+        <div class="opp-head">
+          <div class="opp-ticker"><strong>WEGE3</strong><span>WEG S.A.</span></div>
+          <span class="opp-tag">Industrial · Exportadora</span>
+        </div>
+        <p class="opp-thesis">Melhor industrial da bolsa brasileira — 60%+ da receita fora do Brasil (motores elétricos, energia renovável, automação). Beneficiada pelo investimento global em infraestrutura e transição energética. Crescimento de lucro ~20% a.a. nos últimos 5 anos com qualidade de execução acima da média.</p>
+        <div class="opp-metrics">P/L ~25x (prêmio de qualidade justificado) · ROE ~30% · Mg. Líquida ~14% · Div. Yield ~2%</div>
+        <div class="tc-coverage">
+          <span class="cov-chip buy">Goldman Sachs · Buy (alvo R$64)</span>
+          <span class="cov-chip buy">JPMorgan · Overweight</span>
+          <span class="cov-chip buy">Consenso · Strong Buy</span>
+        </div>
+        <div class="opp-size"><strong>Tamanho sugerido:</strong> R$5.000–8.000 · Complementa PETR4/ITUB4 com exposição industrial/exportadora, reduzindo concentração em commodities e bancos. <strong>Risco:</strong> valuation esticado, câmbio.</div>
+      </div>
+
+      <div class="opp-card">
+        <div class="opp-head">
+          <div class="opp-ticker"><strong>BBAS3</strong><span>Banco do Brasil ON</span></div>
+          <span class="opp-tag">Financeiro · Estatal</span>
+        </div>
+        <p class="opp-thesis">Mais barato que ITUB4 (P/L ~4x vs 9x), yield comparable (~8%), ROE ~20%. Desconto histórico por ser estatal (risco político) mas lucratividade próxima da privada. Interessante se você aceitar explicitamente o risco de interferência governamental.</p>
+        <div class="opp-metrics">P/L ~4,1x · P/VPA ~0,8x · ROE ~20,5% · Div. Yield ~8% · Selic-dependente</div>
+        <div class="tc-coverage">
+          <span class="cov-chip buy">XP · Buy</span>
+          <span class="cov-chip buy">Bradesco BBI · Outperform</span>
+          <span class="cov-chip none">Cobertura internacional limitada</span>
+        </div>
+        <div class="opp-size"><strong>Tamanho sugerido:</strong> R$3.000–5.000 — só faz sentido com apetite explícito para risco estatal. <strong>Risco:</strong> interferência política, qualidade de crédito rural, mudança de política de dividendos.</div>
+      </div>
+
+      <div class="opp-card">
+        <div class="opp-head">
+          <div class="opp-ticker"><strong>RDOR3</strong><span>Rede D'Or São Luiz</span></div>
+          <span class="opp-tag">Saúde · Defensivo</span>
+        </div>
+        <p class="opp-thesis">Líder em internações eletivas de alta complexidade no Brasil. Crescimento por aquisições, setor mais resiliente a ciclo econômico. Diversifica a carteira Brasil que hoje está concentrada em commodities, bancos e utilities — nenhuma posição em saúde atualmente.</p>
+        <div class="opp-metrics">P/L ~22x · Mg. EBITDA ~16% · Crescimento receita ~18% a.a. · Setor defensivo</div>
+        <div class="tc-coverage">
+          <span class="cov-chip buy">JPMorgan · Overweight</span>
+          <span class="cov-chip buy">Goldman Sachs · Buy</span>
+        </div>
+        <div class="opp-size"><strong>Tamanho sugerido:</strong> R$4.000–6.000 · Preenche a ausência de saúde na carteira Brasil. <strong>Risco:</strong> pressão de custos médicos, integração de aquisições, inadimplência de planos de saúde.</div>
+      </div>
+
+      <div class="opp-card">
+        <div class="opp-head">
+          <div class="opp-ticker"><strong>RENT3</strong><span>Localiza</span></div>
+          <span class="opp-tag">Consumo · Locação</span>
+        </div>
+        <p class="opp-thesis">Líder em locação de veículos com pricing power e barreiras de entrada altas. Passou pelo ciclo de escassez de chips/carros e sai mais forte. Tese de recuperação de margem com normalização do mercado de seminovos.</p>
+        <div class="opp-metrics">P/L ~14x · ROE ~17% · Div. Yield ~1,5% · Crescimento receita ~12% a.a.</div>
+        <div class="tc-coverage">
+          <span class="cov-chip buy">JPMorgan · Buy</span>
+          <span class="cov-chip hold">Goldman Sachs · Neutral</span>
+        </div>
+        <div class="opp-size"><strong>Tamanho sugerido:</strong> R$3.000 max — menos convicção que WEGE3/RDOR3. <strong>Risco:</strong> juros altos comprimindo margem financeira, inadimplência.</div>
+      </div>
+    </section>
+  </div><!-- /brtab-panel-opps -->
+
+</div><!-- /panel-brasil -->
+
+<!-- ═══════ EUA ═══════ -->
+<div id="panel-eua" class="tabpanel">
+
+  <input type="radio" name="euatab" id="euatab-acoes" checked>
+  <input type="radio" name="euatab" id="euatab-etfs">
+  <input type="radio" name="euatab" id="euatab-opps">
+  <div class="subtabbar">
+    <label for="euatab-acoes">Ações (9)</label>
+    <label for="euatab-etfs">ETFs (8)</label>
+    <label for="euatab-opps">Oportunidades</label>
+  </div>
+
+  <!-- EUA → Ações -->
+  <div id="euatab-panel-acoes" class="subtabpanel">
+    <section>
+      <h2>EUA — Ações</h2>
+      <p class="lede">Métricas de 15/08/2026, fonte stockanalysis.com. Cobertura de Goldman Sachs, JPMorgan, Morgan Stanley, UBS e Bank of America onde encontrada.</p>
+
+      <!-- MSFT -->
+      <div class="ticker-card">
+        <div class="tc-head">
+          <div class="tc-name"><strong>MSFT</strong><span>Microsoft Corp</span></div>
+          <div class="tc-position">US$ 4.010 · 11,02% da Avenue · +14,28%</div>
+        </div>
+        <div class="metric-grid">
+          <div class="m"><span class="l">Mkt Cap</span><span class="v">US$ 3,68 tri</span></div>
+          <div class="m"><span class="l">Volume/dia</span><span class="v">~36,5 mi</span></div>
+          <div class="m"><span class="l">Div. Yield</span><span class="v">0,73%</span></div>
+          <div class="m"><span class="l">P/E</span><span class="v">27,68</span></div>
+          <div class="m"><span class="l">EV/EBITDA</span><span class="v">19,21</span></div>
+          <div class="m"><span class="l">P/B</span><span class="v">8,34</span></div>
+          <div class="m"><span class="l">ROE</span><span class="v">34,04%</span></div>
+          <div class="m"><span class="l">ROA</span><span class="v">14,09%</span></div>
+          <div class="m"><span class="l">ROIC</span><span class="v">26,18%</span></div>
+          <div class="m"><span class="l">Mg. Bruta</span><span class="v">67,94%</span></div>
+          <div class="m"><span class="l">Mg. EBITDA</span><span class="v">58,53%</span></div>
+          <div class="m"><span class="l">Mg. Líquida</span><span class="v">40,31%</span></div>
+        </div>
+        <p class="tc-analysis">Liderança em nuvem corporativa (Azure) e monetização de IA via Copilot/OpenAI. Riscos: capex de datacenter comprimindo FCL no curto prazo, dependência estratégica da parceria OpenAI.</p>
+        <div class="tc-coverage">
+          <span class="cov-chip buy">JPMorgan · Overweight (US$625)</span>
+          <span class="cov-chip buy">Goldman Sachs · Buy (US$640)</span>
+          <span class="cov-chip buy">Morgan Stanley · Overweight (US$600)</span>
+        </div>
+        <div class="ps-bar">
+          <div class="ps-cell"><span class="l">Preço médio</span><span class="v">US$ 433</span></div>
+          <div class="ps-cell"><span class="l">Cotação atual</span><span class="v">US$ 495</span></div>
+          <div class="ps-cell"><span class="l">Alvo (média GS/JPM/MS)</span><span class="v">US$ 622</span></div>
+          <div class="ps-cell"><span class="l">Status</span><span class="v ps-status below">▲ +25,7% p/ alvo</span></div>
+        </div>
+        <div class="pt-section">
+          <div class="pt-label">Preços-alvo vs. cotação atual (~US$495)</div>
+          <div class="pt-rows">
+            <div class="pt-row"><span class="cov-chip buy" style="min-width:0">Goldman · Buy</span><div class="pt-track"><div class="pt-fill up" style="width:41%"></div></div><span class="pt-val up">US$640 · ▲ +29,3%</span></div>
+            <div class="pt-row"><span class="cov-chip buy" style="min-width:0">JPMorgan · OW</span><div class="pt-track"><div class="pt-fill up" style="width:37%"></div></div><span class="pt-val up">US$625 · ▲ +26,3%</span></div>
+            <div class="pt-row"><span class="cov-chip buy" style="min-width:0">Morgan Stanley · OW</span><div class="pt-track"><div class="pt-fill up" style="width:30%"></div></div><span class="pt-val up">US$600 · ▲ +21,2%</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ASML -->
+      <div class="ticker-card">
+        <div class="tc-head">
+          <div class="tc-name"><strong>ASML</strong><span>ASML Holding NV</span></div>
+          <div class="tc-position">US$ 3.257 · 8,95% da Avenue · +74,24%</div>
+        </div>
+        <div class="metric-grid">
+          <div class="m"><span class="l">Mkt Cap</span><span class="v">US$ 702,4 bi</span></div>
+          <div class="m"><span class="l">Volume/dia</span><span class="v">~1,59 mi</span></div>
+          <div class="m"><span class="l">Div. Yield</span><span class="v">0,42%</span></div>
+          <div class="m"><span class="l">P/E</span><span class="v">57,89</span></div>
+          <div class="m"><span class="l">EV/EBITDA</span><span class="v">45,24</span></div>
+          <div class="m"><span class="l">P/B</span><span class="v">28,22</span></div>
+          <div class="m"><span class="l">ROE</span><span class="v">53,94%</span></div>
+          <div class="m"><span class="l">ROA</span><span class="v">16,45%</span></div>
+          <div class="m"><span class="l">ROIC</span><span class="v">65,98%</span></div>
+          <div class="m"><span class="l">Mg. Bruta</span><span class="v">52,73%</span></div>
+          <div class="m"><span class="l">Mg. EBITDA</span><span class="v">38,18%</span></div>
+          <div class="m"><span class="l">Mg. Líquida</span><span class="v">30,11%</span></div>
+        </div>
+        <p class="tc-analysis">Monopólio em litografia EUV, gargalo estrutural da cadeia de semicondutores avançados. Backlog puxado por capex de TSMC/Intel/Samsung em IA. Riscos: ciclicidade de capex, restrições de exportação à China, múltiplo elevado.</p>
+        <div class="tc-coverage">
+          <span class="cov-chip buy">JPMorgan · Overweight (US$2.400)</span>
+          <span class="cov-chip buy">UBS · Buy (€1.600 ≈ US$1.760)</span>
+          <span class="cov-chip buy">Consenso · Strong Buy (~US$1.882, 42 anal.)</span>
+        </div>
+        <div class="ps-bar">
+          <div class="ps-cell"><span class="l">Preço médio</span><span class="v">US$ 1.003</span></div>
+          <div class="ps-cell"><span class="l">Cotação atual</span><span class="v">US$ 1.748</span></div>
+          <div class="ps-cell"><span class="l">Alvo (consenso)</span><span class="v">US$ 1.882</span></div>
+          <div class="ps-cell"><span class="l">Status</span><span class="v ps-status below">▲ +7,7% p/ alvo</span></div>
+        </div>
+        <div class="pt-section">
+          <div class="pt-label">Preços-alvo vs. cotação atual (~US$1.748) — upside ainda positivo</div>
+          <div class="pt-rows">
+            <div class="pt-row"><span class="cov-chip buy" style="min-width:0">JPMorgan · OW</span><div class="pt-track"><div class="pt-fill up" style="width:52%"></div></div><span class="pt-val up">US$2.400 · ▲ +37,3%</span></div>
+            <div class="pt-row"><span class="cov-chip buy" style="min-width:0">UBS · Buy</span><div class="pt-track"><div class="pt-fill up" style="width:2%"></div></div><span class="pt-val flat">US$1.760 · ▲ +0,7% (praticamente no preço)</span></div>
+            <div class="pt-row"><span class="cov-chip buy" style="min-width:0">Consenso</span><div class="pt-track"><div class="pt-fill up" style="width:11%"></div></div><span class="pt-val up">US$1.882 · ▲ +7,7%</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- NVDA -->
+      <div class="ticker-card">
+        <div class="tc-head">
+          <div class="tc-name"><strong>NVDA</strong><span>NVIDIA Corp</span></div>
+          <div class="tc-position">US$ 3.423 · 9,40% da Avenue · +56,12%</div>
+        </div>
+        <div class="metric-grid">
+          <div class="m"><span class="l">Mkt Cap</span><span class="v">US$ 5,45 tri</span></div>
+          <div class="m"><span class="l">Volume/dia</span><span class="v">~120,1 mi</span></div>
+          <div class="m"><span class="l">Div. Yield</span><span class="v">0,44%</span></div>
+          <div class="m"><span class="l">P/E</span><span class="v">34,50</span></div>
+          <div class="m"><span class="l">EV/EBITDA</span><span class="v">32,69</span></div>
+          <div class="m"><span class="l">P/B</span><span class="v">27,92</span></div>
+          <div class="m"><span class="l">ROE</span><span class="v">114,29%</span></div>
+          <div class="m"><span class="l">ROA</span><span class="v">52,73%</span></div>
+          <div class="m"><span class="l">ROIC</span><span class="v">104,67%</span></div>
+          <div class="m"><span class="l">Mg. Bruta</span><span class="v">74,15%</span></div>
+          <div class="m"><span class="l">Mg. EBITDA</span><span class="v">65,29%</span></div>
+          <div class="m"><span class="l">Mg. Líquida</span><span class="v">62,97%</span></div>
+        </div>
+        <p class="tc-analysis">Líder incontestável em aceleradores de IA, demanda superando oferta, margens excepcionais. Riscos: concentração em poucos hyperscalers, concorrência (AMD, chips proprietários), controles de exportação à China.</p>
+        <div class="tc-coverage">
+          <span class="cov-chip buy">Goldman Sachs · Buy (US$285)</span>
+          <span class="cov-chip buy">Morgan Stanley · Buy (US$288)</span>
+          <span class="cov-chip buy">Bank of America · Buy (US$320)</span>
+          <span class="cov-chip buy">UBS · Buy (~US$280)</span>
+        </div>
+        <div class="ps-bar">
+          <div class="ps-cell"><span class="l">Preço médio</span><span class="v">US$ 145</span></div>
+          <div class="ps-cell"><span class="l">Cotação atual</span><span class="v">US$ 226</span></div>
+          <div class="ps-cell"><span class="l">Alvo (média GS/MS/BofA/UBS)</span><span class="v">US$ 293</span></div>
+          <div class="ps-cell"><span class="l">Status</span><span class="v ps-status below">▲ +29,6% p/ alvo</span></div>
+        </div>
+        <div class="pt-section">
+          <div class="pt-label">Preços-alvo vs. cotação atual (~US$226)</div>
+          <div class="pt-rows">
+            <div class="pt-row"><span class="cov-chip buy" style="min-width:0">BofA · Buy</span><div class="pt-track"><div class="pt-fill up" style="width:59%"></div></div><span class="pt-val up">US$320 · ▲ +41,6%</span></div>
+            <div class="pt-row"><span class="cov-chip buy" style="min-width:0">MS · Buy</span><div class="pt-track"><div class="pt-fill up" style="width:39%"></div></div><span class="pt-val up">US$288 · ▲ +27,4%</span></div>
+            <div class="pt-row"><span class="cov-chip buy" style="min-width:0">Goldman · Buy</span><div class="pt-track"><div class="pt-fill up" style="width:37%"></div></div><span class="pt-val up">US$285 · ▲ +26,1%</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TSM -->
+      <div class="ticker-card">
+        <div class="tc-head">
+          <div class="tc-name"><strong>TSM</strong><span>Taiwan Semiconductor (ADR)</span></div>
+          <div class="tc-position">US$ 3.216 · 8,83% da Avenue · +49,27%</div>
+        </div>
+        <div class="metric-grid">
+          <div class="m"><span class="l">Mkt Cap</span><span class="v">US$ 1,94 tri</span></div>
+          <div class="m"><span class="l">Volume/dia</span><span class="v">~12,5 mi</span></div>
+          <div class="m"><span class="l">Div. Yield</span><span class="v">0,65%</span></div>
+          <div class="m"><span class="l">P/E</span><span class="v">27,86</span></div>
+          <div class="m"><span class="l">EV/EBITDA</span><span class="v">18,67</span></div>
+          <div class="m"><span class="l">P/B</span><span class="v">9,54</span></div>
+          <div class="m"><span class="l">ROE</span><span class="v">39,97%</span></div>
+          <div class="m"><span class="l">ROA</span><span class="v">19,01%</span></div>
+          <div class="m"><span class="l">ROIC</span><span class="v">54,61%</span></div>
+          <div class="m"><span class="l">Mg. Bruta</span><span class="v">64,23%</span></div>
+          <div class="m"><span class="l">Mg. EBITDA</span><span class="v flag">71,51% ④</span></div>
+          <div class="m"><span class="l">Mg. Líquida</span><span class="v">49,92%</span></div>
+        </div>
+        <p class="tc-analysis">Fundição dominante de chips de ponta (N3/N2), beneficiária direta do ciclo de IA. Risco central: geopolítico Taiwan-China. Berkshire: comprou ~60M ações em 3T2022 (~US$4,1bi) e vendeu 86% no trimestre seguinte, zerando posição até 1T2023 citando risco geopolítico.</p>
+        <div class="tc-coverage">
+          <span class="cov-chip buy">Goldman Sachs · Buy (ADR ~US$372)</span>
+          <span class="cov-chip buy">JPMorgan · Overweight (US$540)</span>
+          <span class="cov-chip buy">Consenso · Strong Buy (~US$540)</span>
+        </div>
+        <div class="ps-bar">
+          <div class="ps-cell"><span class="l">Preço médio</span><span class="v">US$ 288</span></div>
+          <div class="ps-cell"><span class="l">Cotação atual</span><span class="v">US$ 430</span></div>
+          <div class="ps-cell"><span class="l">Alvo (média GS/JPM)</span><span class="v">US$ 456</span></div>
+          <div class="ps-cell"><span class="l">Status</span><span class="v ps-status below">▲ +6,0% p/ alvo</span></div>
+        </div>
+        <div class="pt-section">
+          <div class="pt-label">Preços-alvo vs. cotação atual (~US$430)</div>
+          <div class="pt-rows">
+            <div class="pt-row"><span class="cov-chip buy" style="min-width:0">JPMorgan · OW</span><div class="pt-track"><div class="pt-fill up" style="width:36%"></div></div><span class="pt-val up">US$540 · ▲ +25,6%</span></div>
+            <div class="pt-row"><span class="cov-chip buy" style="min-width:0">Goldman · Buy</span><div class="pt-track" style="direction:rtl"><div class="pt-fill dn" style="width:20%"></div></div><span class="pt-val dn">US$372 · ▼ −13,5% <span class="flag">(alvo desatualizado — pre-rally)</span></span></div>
+          </div>
+        </div>
+        <p class="tc-note">④ Mg. EBITDA acima da mg. bruta — reflete D&amp;A pesado somado de volta (diferença metodológica da fonte).</p>
+      </div>
+
+      <!-- AAPL -->
+      <div class="ticker-card">
+        <div class="tc-head">
+          <div class="tc-name"><strong>AAPL</strong><span>Apple Inc</span></div>
+          <div class="tc-position">US$ 2.736 · 7,52% da Avenue · +17,56%</div>
+        </div>
+        <div class="metric-grid">
+          <div class="m"><span class="l">Mkt Cap</span><span class="v">US$ 4,46 tri</span></div>
+          <div class="m"><span class="l">Volume/dia</span><span class="v">~52,2 mi</span></div>
+          <div class="m"><span class="l">Div. Yield</span><span class="v">0,35%</span></div>
+          <div class="m"><span class="l">P/E</span><span class="v">35,02</span></div>
+          <div class="m"><span class="l">EV/EBITDA</span><span class="v">26,16</span></div>
+          <div class="m"><span class="l">P/B</span><span class="v">41,48</span></div>
+          <div class="m"><span class="l">ROE</span><span class="v">148,75%</span></div>
+          <div class="m"><span class="l">ROA</span><span class="v">27,08%</span></div>
+          <div class="m"><span class="l">ROIC</span><span class="v">101,57%</span></div>
+          <div class="m"><span class="l">Mg. Bruta</span><span class="v">48,65%</span></div>
+          <div class="m"><span class="l">Mg. EBITDA</span><span class="v">35,98%</span></div>
+          <div class="m"><span class="l">Mg. Líquida</span><span class="v">27,62%</span></div>
+        </div>
+        <p class="tc-analysis">Ecossistema de serviços de alta margem e recompras agressivas sustentam ROE extremo. Berkshire: maior posição do portfólio (~22% dos US$263bi — já foi ~40%, vem reduzindo desde 2024). Riscos: hardware desacelerado, dependência da China.</p>
+        <div class="tc-coverage">
+          <span class="cov-chip buy">Morgan Stanley · Buy (US$360)</span>
+          <span class="cov-chip buy">Goldman Sachs · Buy (US$360)</span>
+          <span class="cov-chip buy">JPMorgan · Overweight (US$325)</span>
+          <span class="cov-chip hold">UBS · Neutral (US$296)</span>
+        </div>
+        <div class="ps-bar">
+          <div class="ps-cell"><span class="l">Preço médio</span><span class="v">US$ 260</span></div>
+          <div class="ps-cell"><span class="l">Cotação atual</span><span class="v">US$ 306</span></div>
+          <div class="ps-cell"><span class="l">Alvo (média GS/MS/JPM)</span><span class="v">US$ 348</span></div>
+          <div class="ps-cell"><span class="l">Status</span><span class="v ps-status below">▲ +13,7% p/ alvo</span></div>
+        </div>
+        <div class="pt-section">
+          <div class="pt-label">Preços-alvo vs. cotação atual (~US$306)</div>
+          <div class="pt-rows">
+            <div class="pt-row"><span class="cov-chip buy" style="min-width:0">Goldman/MS · Buy</span><div class="pt-track"><div class="pt-fill up" style="width:25%"></div></div><span class="pt-val up">US$360 · ▲ +17,6%</span></div>
+            <div class="pt-row"><span class="cov-chip buy" style="min-width:0">JPMorgan · OW</span><div class="pt-track"><div class="pt-fill up" style="width:9%"></div></div><span class="pt-val up">US$325 · ▲ +6,2%</span></div>
+            <div class="pt-row"><span class="cov-chip hold" style="min-width:0">UBS · Neutral</span><div class="pt-track" style="direction:rtl"><div class="pt-fill dn" style="width:5%"></div></div><span class="pt-val dn">US$296 · ▼ −3,3% <span class="flag">(target abaixo da cotação)</span></span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- GOOGL -->
+      <div class="ticker-card">
+        <div class="tc-head">
+          <div class="tc-name"><strong>GOOGL</strong><span>Alphabet Classe A</span></div>
+          <div class="tc-position">US$ 810 · 2,22% da Avenue · −13,06%</div>
+        </div>
+        <div class="metric-grid">
+          <div class="m"><span class="l">Mkt Cap</span><span class="v">US$ 4,23 tri</span></div>
+          <div class="m"><span class="l">Volume/dia</span><span class="v">~31,1 mi</span></div>
+          <div class="m"><span class="l">Div. Yield</span><span class="v">0,25%</span></div>
+          <div class="m"><span class="l">P/E</span><span class="v flag">17,38 ⑤</span></div>
+          <div class="m"><span class="l">EV/EBITDA</span><span class="v">23,64</span></div>
+          <div class="m"><span class="l">P/B</span><span class="v">6,81</span></div>
+          <div class="m"><span class="l">ROE</span><span class="v">48,68%</span></div>
+          <div class="m"><span class="l">ROA</span><span class="v">12,96%</span></div>
+          <div class="m"><span class="l">ROIC</span><span class="v">24,93%</span></div>
+          <div class="m"><span class="l">Mg. Bruta</span><span class="v">60,90%</span></div>
+          <div class="m"><span class="l">Mg. EBITDA</span><span class="v">38,84%</span></div>
+          <div class="m"><span class="l">Mg. Líquida</span><span class="v flag">54,77% ⑤</span></div>
+        </div>
+        <p class="tc-analysis">Busca resiliente, Google Cloud ganhando share com IA (Gemini), menor P/E entre as mega caps de tech (~17x). Riscos: antitruste EUA/Europa, disrupção do modelo de busca por IA generativa concorrente. GOOGL está na proposta de venda apenas pela perda de −13% (eficiência fiscal), não por visão negativa.</p>
+        <div class="tc-coverage">
+          <span class="cov-chip buy">Morgan Stanley · Overweight (US$400)</span>
+          <span class="cov-chip buy">Consenso · 57 Buy / 6 Hold / 0 Sell</span>
+        </div>
+        <div class="ps-bar">
+          <div class="ps-cell"><span class="l">Preço médio</span><span class="v">US$ 398</span></div>
+          <div class="ps-cell"><span class="l">Cotação atual</span><span class="v">US$ 346</span></div>
+          <div class="ps-cell"><span class="l">Alvo (MS)</span><span class="v">US$ 400</span></div>
+          <div class="ps-cell"><span class="l">Status</span><span class="v ps-status below">▲ +15,6% p/ alvo · (−13,1% s/ PM)</span></div>
+        </div>
+        <div class="pt-section">
+          <div class="pt-label">Preços-alvo vs. cotação atual (~US$346)</div>
+          <div class="pt-rows">
+            <div class="pt-row"><span class="cov-chip buy" style="min-width:0">Morgan Stanley · OW</span><div class="pt-track"><div class="pt-fill up" style="width:22%"></div></div><span class="pt-val up">US$400 · ▲ +15,6%</span></div>
+          </div>
+        </div>
+        <p class="tc-note">⑤ P/E baixo e mg. líquida alta refletem provavelmente ganhos não realizados em participações societárias inflando o lucro reportado — desconsiderar o aparente "desconto" sem normalizar esse efeito.</p>
+      </div>
+
+      <!-- TTWO -->
+      <div class="ticker-card">
+        <div class="tc-head">
+          <div class="tc-name"><strong>TTWO</strong><span>Take-Two Interactive</span></div>
+          <div class="tc-position">US$ 2.503 · 6,88% da Avenue · +10,24%</div>
+          <span class="tc-badge buy-more">▲ Aporte adicional recomendado</span>
+        </div>
+        <div class="metric-grid">
+          <div class="m"><span class="l">Mkt Cap</span><span class="v">US$ 46,2 bi</span></div>
+          <div class="m"><span class="l">Volume/dia</span><span class="v">~2,07 mi</span></div>
+          <div class="m"><span class="l">Div. Yield</span><span class="v">0% (confirmado)</span></div>
+          <div class="m"><span class="l">P/E</span><span class="v flag">n/a (prejuízo)</span></div>
+          <div class="m"><span class="l">EV/EBITDA</span><span class="v">39,72</span></div>
+          <div class="m"><span class="l">P/B</span><span class="v">12,54</span></div>
+          <div class="m"><span class="l">ROE</span><span class="v neg">−9,04%</span></div>
+          <div class="m"><span class="l">ROA</span><span class="v neg">−0,62%</span></div>
+          <div class="m"><span class="l">ROIC</span><span class="v neg">−2,03%</span></div>
+          <div class="m"><span class="l">Mg. Bruta</span><span class="v">57,13%</span></div>
+          <div class="m"><span class="l">Mg. EBITDA</span><span class="v">17,90%</span></div>
+          <div class="m"><span class="l">Mg. Líquida</span><span class="v neg">−4,79%</span></div>
+        </div>
+        <p class="tc-analysis"><strong style="color:var(--ink)">Catalisador único de prazo definido: GTA VI em novembro/2026</strong> (estimativas de &gt;35 milhões de unidades no primeiro ano). Alvo médio de consensus de ~US$296 implica +19,8% do preço atual (~US$247). Todos os 5 grandes bancos em Buy/Overweight — consenso dos analistas raramente é tão uniforme. <strong style="color:var(--ink)">Recomendação: aporte adicional de US$1.000–2.000 antes do lançamento.</strong> Risco: novo atraso (histórico recente), empresa no prejuízo, dependência de um único título.</p>
+        <div class="tc-coverage">
+          <span class="cov-chip buy">Goldman Sachs · Buy (US$285)</span>
+          <span class="cov-chip buy">Morgan Stanley · Overweight (US$265)</span>
+          <span class="cov-chip buy">UBS · Buy (US$300)</span>
+          <span class="cov-chip buy">JPMorgan · Overweight (US$310)</span>
+          <span class="cov-chip buy">Bank of America · Buy (US$320)</span>
+        </div>
+        <div class="ps-bar">
+          <div class="ps-cell"><span class="l">Preço médio</span><span class="v">US$ 224</span></div>
+          <div class="ps-cell"><span class="l">Cotação atual</span><span class="v">US$ 247</span></div>
+          <div class="ps-cell"><span class="l">Alvo (média 5 bancos)</span><span class="v">US$ 296</span></div>
+          <div class="ps-cell"><span class="l">Status</span><span class="v ps-status below">▲ +19,8% p/ alvo · GTA VI nov/26</span></div>
+        </div>
+        <div class="pt-section">
+          <div class="pt-label">Preços-alvo vs. cotação atual (~US$247) — consenso uniforme de alta</div>
+          <div class="pt-rows">
+            <div class="pt-row"><span class="cov-chip buy" style="min-width:0">BofA · Buy</span><div class="pt-track"><div class="pt-fill up" style="width:42%"></div></div><span class="pt-val up">US$320 · ▲ +29,6%</span></div>
+            <div class="pt-row"><span class="cov-chip buy" style="min-width:0">JPMorgan · OW</span><div class="pt-track"><div class="pt-fill up" style="width:36%"></div></div><span class="pt-val up">US$310 · ▲ +25,5%</span></div>
+            <div class="pt-row"><span class="cov-chip buy" style="min-width:0">UBS · Buy</span><div class="pt-track"><div class="pt-fill up" style="width:30%"></div></div><span class="pt-val up">US$300 · ▲ +21,5%</span></div>
+            <div class="pt-row"><span class="cov-chip buy" style="min-width:0">Goldman · Buy</span><div class="pt-track"><div class="pt-fill up" style="width:22%"></div></div><span class="pt-val up">US$285 · ▲ +15,4%</span></div>
+            <div class="pt-row"><span class="cov-chip buy" style="min-width:0">MS · OW</span><div class="pt-track"><div class="pt-fill up" style="width:10%"></div></div><span class="pt-val up">US$265 · ▲ +7,3%</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SMCI -->
+      <div class="ticker-card">
+        <div class="tc-head">
+          <div class="tc-name"><strong>SMCI</strong><span>Super Micro Computer</span></div>
+          <div class="tc-position">US$ 1.152 · 3,17% da Avenue · +14,51%</div>
+          <span class="tc-badge caution">⚠ Candidato a venda</span>
+        </div>
+        <div class="metric-grid">
+          <div class="m"><span class="l">Mkt Cap</span><span class="v">US$ 25,8 bi</span></div>
+          <div class="m"><span class="l">Volume/dia</span><span class="v">~60,6 mi</span></div>
+          <div class="m"><span class="l">Div. Yield</span><span class="v">0% (confirmado)</span></div>
+          <div class="m"><span class="l">P/E</span><span class="v">12,24</span></div>
+          <div class="m"><span class="l">EV/EBITDA</span><span class="v">9,58</span></div>
+          <div class="m"><span class="l">P/B</span><span class="v">2,34</span></div>
+          <div class="m"><span class="l">ROE</span><span class="v">21,47%</span></div>
+          <div class="m"><span class="l">ROA</span><span class="v">7,88%</span></div>
+          <div class="m"><span class="l">ROIC</span><span class="v">13,99%</span></div>
+          <div class="m"><span class="l">Mg. Bruta</span><span class="v flag">10,82%</span></div>
+          <div class="m"><span class="l">Mg. EBITDA</span><span class="v">7,32%</span></div>
+          <div class="m"><span class="l">Mg. Líquida</span><span class="v">5,71%</span></div>
+        </div>
+        <p class="tc-analysis">Fornecedor de servidores/infra para IA, parceiro próximo da Nvidia. Crescimento elevado mas margens apertadas e questionamentos de governança contábil recorrentes desde 2024. <strong style="color:var(--critical)">Dois bancos com alvo bem abaixo do preço atual.</strong></p>
+        <div class="tc-coverage">
+          <span class="cov-chip sell">Goldman Sachs · Sell (US$27)</span>
+          <span class="cov-chip sell">JPMorgan · Underweight (US$23, cortado de US$50)</span>
+          <span class="cov-chip hold">Consenso mercado · Hold (~US$41–42)</span>
+        </div>
+        <div class="ps-bar">
+          <div class="ps-cell"><span class="l">Preço médio</span><span class="v">US$ 35</span></div>
+          <div class="ps-cell"><span class="l">Cotação atual</span><span class="v">US$ 39,50</span></div>
+          <div class="ps-cell"><span class="l">Alvo (média GS/JPM)</span><span class="v">US$ 25</span></div>
+          <div class="ps-cell"><span class="l">Status</span><span class="v ps-status above">▼ Acima do alvo − vender</span></div>
+        </div>
+        <div class="pt-section">
+          <div class="pt-label">Preços-alvo vs. cotação atual (~US$39,50) — maioria vê downside</div>
+          <div class="pt-rows">
+            <div class="pt-row"><span class="cov-chip sell" style="min-width:0">JPMorgan · UW</span><div class="pt-track" style="direction:rtl"><div class="pt-fill dn" style="width:60%"></div></div><span class="pt-val dn">US$23 · ▼ −41,8%</span></div>
+            <div class="pt-row"><span class="cov-chip sell" style="min-width:0">Goldman · Sell</span><div class="pt-track" style="direction:rtl"><div class="pt-fill dn" style="width:45%"></div></div><span class="pt-val dn">US$27 · ▼ −31,6%</span></div>
+            <div class="pt-row"><span class="cov-chip hold" style="min-width:0">Consenso · Hold</span><div class="pt-track"><div class="pt-fill up" style="width:4%"></div></div><span class="pt-val flat">US$41 · ▲ +3,8%</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PLTR -->
+      <div class="ticker-card">
+        <div class="tc-head">
+          <div class="tc-name"><strong>PLTR</strong><span>Palantir Technologies</span></div>
+          <div class="tc-position">US$ 1.026 · 2,82% da Avenue · +2,63%</div>
+          <span class="tc-badge caution">⚠ Candidato a venda</span>
+        </div>
+        <div class="metric-grid">
+          <div class="m"><span class="l">Mkt Cap</span><span class="v">US$ 418,2 bi</span></div>
+          <div class="m"><span class="l">Volume/dia</span><span class="v">~46,5 mi</span></div>
+          <div class="m"><span class="l">Div. Yield</span><span class="v">0% (confirmado)</span></div>
+          <div class="m"><span class="l">P/E</span><span class="v flag">153,10 ⑥</span></div>
+          <div class="m"><span class="l">EV/EBITDA</span><span class="v flag">156,16 ⑥</span></div>
+          <div class="m"><span class="l">P/B</span><span class="v">44,01</span></div>
+          <div class="m"><span class="l">ROE</span><span class="v">38,10%</span></div>
+          <div class="m"><span class="l">ROA</span><span class="v">17,29%</span></div>
+          <div class="m"><span class="l">ROIC</span><span class="v flag">363,80% ⑥</span></div>
+          <div class="m"><span class="l">Mg. Bruta</span><span class="v">84,80%</span></div>
+          <div class="m"><span class="l">Mg. EBITDA</span><span class="v">43,25%</span></div>
+          <div class="m"><span class="l">Mg. Líquida</span><span class="v">49,00%</span></div>
+        </div>
+        <p class="tc-analysis">Crescimento acelerado (guidance ~82% para 2026) puxado por contratos de IA/dados comerciais e governamentais, margens de software altas. <strong style="color:var(--ink)">Valuation entre os mais esticados do mercado</strong> — P/E ~153x e EV/EBITDA ~156x. Os alvos dos analistas são altos mas o risco de compressão de múltiplo é real.</p>
+        <div class="tc-coverage">
+          <span class="cov-chip buy">UBS · Buy (US$220)</span>
+          <span class="cov-chip hold">Morgan Stanley · Equal-Weight (US$205)</span>
+          <span class="cov-chip buy">Consenso · Buy (alvo médio ~US$198)</span>
+        </div>
+        <div class="ps-bar">
+          <div class="ps-cell"><span class="l">Preço médio</span><span class="v">US$ 170</span></div>
+          <div class="ps-cell"><span class="l">Cotação atual</span><span class="v">US$ 174</span></div>
+          <div class="ps-cell"><span class="l">Alvo (média UBS/MS)</span><span class="v">US$ 212</span></div>
+          <div class="ps-cell"><span class="l">Status</span><span class="v ps-status below">▲ +21,8% p/ alvo · P/E ~153x</span></div>
+        </div>
+        <div class="pt-section">
+          <div class="pt-label">Preços-alvo vs. cotação atual (~US$174) — targets altos, valuation de risco</div>
+          <div class="pt-rows">
+            <div class="pt-row"><span class="cov-chip buy" style="min-width:0">UBS · Buy</span><div class="pt-track"><div class="pt-fill up" style="width:30%"></div></div><span class="pt-val up">US$220 · ▲ +26,4%</span></div>
+            <div class="pt-row"><span class="cov-chip hold" style="min-width:0">MS · Equal-Weight</span><div class="pt-track"><div class="pt-fill up" style="width:23%"></div></div><span class="pt-val up">US$205 · ▲ +17,8%</span></div>
+          </div>
+        </div>
+        <p class="tc-note">⑥ ROIC de 363,80% é distorção estatística — base de capital investido líquido muito pequena (caixa elevado distorce denominador). Não interpretar como sinal de qualidade excepcional.</p>
+      </div>
+    </section>
+  </div><!-- /euatab-panel-acoes -->
+
+  <!-- EUA → ETFs -->
+  <div id="euatab-panel-etfs" class="subtabpanel">
+    <section>
+      <h2>EUA — ETFs</h2>
+      <p class="lede">Métricas adaptadas para fundos (AUM no lugar de mkt cap; sem P/L, margens ou ROE consolidados). Fonte: factsheet de cada emissor + stockanalysis.com.</p>
+
+      <!-- DY tracking table -->
+      <div class="tbl-wrap" style="margin-bottom:24px">
+        <table>
+          <thead>
+            <tr>
+              <th>ETF</th>
+              <th class="num">DY anual (anunciado)</th>
+              <th class="num">PM</th>
+              <th class="num">DY pago Jan–Jul/2026 (est.)</th>
+              <th class="num">Projeção dez/2026</th>
+              <th class="num">Pago vs. expectativa YTD</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>XYLD</strong></td>
+              <td class="num">11,57%</td>
+              <td class="num">US$ 41,70</td>
+              <td class="num">US$ 2,89 <span class="flag">(6,93%)</span></td>
+              <td class="num">≈ US$ 4,83</td>
+              <td class="num">62,5% esperado · 59,8% entregue</td>
+              <td><span class="chip at" style="display:inline-block;font-size:10.5px;font-weight:700;padding:2px 7px;border-radius:999px;background:color-mix(in srgb,var(--warning) 15%,transparent);color:#8a5a00">→ Levemente abaixo <span class="flag">(vol baixa no rally)</span></span></td>
+            </tr>
+            <tr>
+              <td><strong>QYLD</strong></td>
+              <td class="num">11,46%</td>
+              <td class="num">US$ 16,50</td>
+              <td class="num">US$ 1,14 <span class="flag">(6,89%)</span></td>
+              <td class="num">≈ US$ 1,89</td>
+              <td class="num">62,5% esperado · 60,2% entregue</td>
+              <td><span class="chip at" style="display:inline-block;font-size:10.5px;font-weight:700;padding:2px 7px;border-radius:999px;background:color-mix(in srgb,var(--warning) 15%,transparent);color:#8a5a00">→ Levemente abaixo <span class="flag">(vol baixa no rally)</span></span></td>
+            </tr>
+            <tr>
+              <td><strong>JEPI</strong></td>
+              <td class="num">7,90%</td>
+              <td class="num">US$ 57,00</td>
+              <td class="num">US$ 2,50 <span class="flag">(4,39%)</span></td>
+              <td class="num">≈ US$ 4,50</td>
+              <td class="num">62,5% esperado · 55,6% entregue</td>
+              <td><span class="chip at" style="display:inline-block;font-size:10.5px;font-weight:700;padding:2px 7px;border-radius:999px;background:color-mix(in srgb,var(--warning) 15%,transparent);color:#8a5a00">→ Na faixa esperada</span></td>
+            </tr>
+            <tr>
+              <td><strong>JEPQ</strong></td>
+              <td class="num">10,70%</td>
+              <td class="num">US$ 51,70</td>
+              <td class="num">US$ 3,26 <span class="flag">(6,31%)</span></td>
+              <td class="num">≈ US$ 5,53</td>
+              <td class="num">62,5% esperado · 59,0% entregue</td>
+              <td><span class="chip at" style="display:inline-block;font-size:10.5px;font-weight:700;padding:2px 7px;border-radius:999px;background:color-mix(in srgb,var(--warning) 15%,transparent);color:#8a5a00">→ Na faixa esperada</span></td>
+            </tr>
+            <tr>
+              <td><strong>QQQI</strong></td>
+              <td class="num">14,03%</td>
+              <td class="num">US$ 46,80</td>
+              <td class="num">US$ 4,07 <span class="flag">(8,70%)</span></td>
+              <td class="num">≈ US$ 6,57</td>
+              <td class="num">62,5% esperado · 62,0% entregue</td>
+              <td><span class="chip below" style="display:inline-block;font-size:10.5px;font-weight:700;padding:2px 7px;border-radius:999px;background:color-mix(in srgb,var(--good) 15%,transparent);color:var(--good)">▲ Na expectativa</span></td>
+            </tr>
+            <tr>
+              <td><strong>SPHD</strong></td>
+              <td class="num">4,60%</td>
+              <td class="num">US$ 39,20</td>
+              <td class="num">US$ 1,14 <span class="flag">(2,91%)</span></td>
+              <td class="num">≈ US$ 1,80</td>
+              <td class="num">62,5% esperado · 63,3% entregue</td>
+              <td><span class="chip below" style="display:inline-block;font-size:10.5px;font-weight:700;padding:2px 7px;border-radius:999px;background:color-mix(in srgb,var(--good) 15%,transparent);color:var(--good)">▲ Ligeiramente acima</span></td>
+            </tr>
+            <tr>
+              <td><strong>VOO</strong></td>
+              <td class="num">1,03%</td>
+              <td class="num">US$ 484</td>
+              <td class="num">US$ 2,52 <span class="flag">(0,52%)</span></td>
+              <td class="num">≈ US$ 4,99</td>
+              <td class="num">62,5% esperado · 50,5% entregue <span class="flag">(trimestral)</span></td>
+              <td><span class="chip at" style="display:inline-block;font-size:10.5px;font-weight:700;padding:2px 7px;border-radius:999px;background:color-mix(in srgb,var(--warning) 15%,transparent);color:#8a5a00">→ Na expectativa <span class="flag">(trim. — Q3 ainda pendente)</span></span></td>
+            </tr>
+          </tbody>
+          <tfoot>
+            <tr><td colspan="3"><strong>Total Avenue ETFs (DY)</strong></td><td class="num"><strong>US$ 15,52/carteira <span class="flag">est.</span></strong></td><td class="num"><strong>≈ US$ 25,11/ano proj.</strong></td><td colspan="2" style="font-size:12px;color:var(--ink-muted)">Referência: ETFs respondem por 91% da renda da Avenue. XYLD/QYLD levemente abaixo do ritmo anual por volatilidade mais baixa no mercado de alta de 2026.</td></tr>
+          </tfoot>
+        </table>
+      </div>
+      <p class="drift-note" style="margin-bottom:20px">DY pago Jan–Jul estimado com base no yield anual declarado distribuído pro-rata (7 distribuições mensais). ETFs de covered call têm payout variável com a volatilidade implícita — em mercados de forte alta (como 2026) o prêmio das opções costuma ser menor, comprimindo levemente o DY. XYLD/QYLD (100% overwrite) são mais sensíveis a isso do que JEPI/JEPQ/QQQI (overwrite parcial). Os números reais devem ser conferidos no extrato da Avenue.</p>
+
+      <div class="ticker-card">
+        <div class="tc-head"><div class="tc-name"><strong>VOO</strong><span>Vanguard S&amp;P 500 ETF</span></div><div class="tc-position">US$ 1.700 · 4,67% · +2,61%</div></div>
+        <div class="metric-grid">
+          <div class="m"><span class="l">AUM</span><span class="v">~US$ 1,03 tri</span></div>
+          <div class="m"><span class="l">Volume/dia</span><span class="v">~4,22 mi</span></div>
+          <div class="m"><span class="l">Yield</span><span class="v">1,03%</span></div>
+          <div class="m"><span class="l">Expense Ratio</span><span class="v">0,03%</span></div>
+          <div class="m"><span class="l">Holdings</span><span class="v">520</span></div>
+          <div class="m"><span class="l">P/E médio</span><span class="v">27,51</span></div>
+          <div class="m"><span class="l">Benchmark</span><span class="v">S&amp;P 500</span></div>
+          <div class="m"><span class="l">Overwrite</span><span class="v">N/A</span></div>
+        </div>
+        <p class="tc-analysis">Réplica passiva do S&amp;P 500, maior ETF do mundo em patrimônio. Expense ratio 0,03% — custo mínimo do mercado. Core de qualquer carteira US, sem geração de renda incremental.</p>
+      </div>
+
+      <div class="ticker-card">
+        <div class="tc-head"><div class="tc-name"><strong>XYLD</strong><span>Global X S&amp;P 500 Covered Call</span></div><div class="tc-position">US$ 4.073 · 11,19% · +3,01%</div></div>
+        <div class="metric-grid">
+          <div class="m"><span class="l">AUM</span><span class="v">US$ 3,29 bi</span></div>
+          <div class="m"><span class="l">Volume/dia</span><span class="v">~1,13 mi</span></div>
+          <div class="m"><span class="l">Yield</span><span class="v">11,57%</span></div>
+          <div class="m"><span class="l">Expense Ratio</span><span class="v">0,60%</span></div>
+          <div class="m"><span class="l">Holdings</span><span class="v">505</span></div>
+          <div class="m"><span class="l">Benchmark</span><span class="v">Cboe BXM</span></div>
+          <div class="m"><span class="l">Overwrite</span><span class="v">~100%</span></div>
+          <div class="m"><span class="l">Paga desde</span><span class="v">2013 (13 anos)</span></div>
+        </div>
+        <p class="tc-analysis">Compra o S&amp;P 500 e vende calls sobre ~100% do notional mensalmente, convertendo prêmio em distribuição. 13 anos consecutivos pagando. Prioriza renda sobre valorização — o teto das calls limita upside em rally (ex: S&amp;P +4,05% vs XYLD +1,43% no período abr–mai/2026).</p>
+      </div>
+
+      <div class="ticker-card">
+        <div class="tc-head"><div class="tc-name"><strong>QYLD</strong><span>Global X Nasdaq-100 Covered Call</span></div><div class="tc-position">US$ 3.660 · 10,05% · +2,85%</div></div>
+        <div class="metric-grid">
+          <div class="m"><span class="l">AUM</span><span class="v">US$ 8,31 bi</span></div>
+          <div class="m"><span class="l">Volume/dia</span><span class="v">~10,59 mi</span></div>
+          <div class="m"><span class="l">Yield</span><span class="v">11,46%</span></div>
+          <div class="m"><span class="l">Expense Ratio</span><span class="v">0,60%</span></div>
+          <div class="m"><span class="l">Holdings</span><span class="v">103</span></div>
+          <div class="m"><span class="l">Benchmark</span><span class="v">Cboe BXNT V2</span></div>
+          <div class="m"><span class="l">Overwrite</span><span class="v">~100%</span></div>
+          <div class="m"><span class="l">Top 5</span><span class="v">~32% em NVDA/AAPL/MSFT...</span></div>
+        </div>
+        <p class="tc-analysis">Mesma lógica de XYLD sobre o Nasdaq-100. Maior volatilidade implícita gera prêmio mais rico, mas mesmo teto de upside: Nasdaq +9,25% vs QYLD +0,95% no período de referência.</p>
+      </div>
+
+      <div class="ticker-card">
+        <div class="tc-head"><div class="tc-name"><strong>JEPI</strong><span>JPMorgan Equity Premium Income</span></div><div class="tc-position">US$ 1.028 · 2,82% · +3,45%</div></div>
+        <div class="metric-grid">
+          <div class="m"><span class="l">AUM</span><span class="v">US$ 46,13 bi</span></div>
+          <div class="m"><span class="l">Volume/dia</span><span class="v">~3,41 mi</span></div>
+          <div class="m"><span class="l">Yield</span><span class="v">7,90%</span></div>
+          <div class="m"><span class="l">Expense Ratio</span><span class="v">0,35%</span></div>
+          <div class="m"><span class="l">Holdings</span><span class="v">134</span></div>
+          <div class="m"><span class="l">P/E médio</span><span class="v">26,48</span></div>
+          <div class="m"><span class="l">Benchmark</span><span class="v">S&amp;P 500 (ativo)</span></div>
+          <div class="m"><span class="l">Overwrite</span><span class="v">~15–20% ELN</span></div>
+        </div>
+        <p class="tc-analysis">Fundo ativo: carteira defensiva + ~15-20% do book em ELNs replicando calls OTM de 1 mês sobre o S&amp;P 500 — cobertura parcial, retém mais upside que XYLD. Com S&amp;P +22% em 12 meses, JEPI subiu só ~7%. <strong style="color:var(--ink)">Risco: renda das ELNs é dívida não garantida dos bancos emissores</strong> (JPMorgan, Goldman, Citi, RBC).</p>
+      </div>
+
+      <div class="ticker-card">
+        <div class="tc-head"><div class="tc-name"><strong>JEPQ</strong><span>JPMorgan Nasdaq Equity Premium Income</span></div><div class="tc-position">US$ 1.047 · 2,88% · +0,66%</div><span class="tc-badge caution">⚠ Candidato a venda (Prioridade 3)</span></div>
+        <div class="metric-grid">
+          <div class="m"><span class="l">AUM</span><span class="v">US$ 41,58 bi</span></div>
+          <div class="m"><span class="l">Volume/dia</span><span class="v">~3,74 mi</span></div>
+          <div class="m"><span class="l">Yield</span><span class="v flag">10,6–10,8%</span></div>
+          <div class="m"><span class="l">Expense Ratio</span><span class="v">0,35%</span></div>
+          <div class="m"><span class="l">Holdings</span><span class="v">111</span></div>
+          <div class="m"><span class="l">P/E médio</span><span class="v">34,40</span></div>
+          <div class="m"><span class="l">Benchmark</span><span class="v">Nasdaq-100 (ativo)</span></div>
+          <div class="m"><span class="l">Overwrite</span><span class="v">~15% ELN</span></div>
+        </div>
+        <p class="tc-analysis">Mesma arquitetura do JEPI aplicada ao Nasdaq-100 (NVDA/AAPL/MSFT/GOOG/AMZN ~28% do top-5). Yield maior pela volatilidade do índice. Mesmo risco de contraparte bancária das ELNs, amplificado pela concentração em tech. <strong style="color:var(--ink)">Candidato preferencial para reduzir dentro do cluster.</strong></p>
+      </div>
+
+      <div class="ticker-card">
+        <div class="tc-head"><div class="tc-name"><strong>QQQI</strong><span>NEOS Nasdaq-100 High Income</span></div><div class="tc-position">US$ 930 · 2,55% · +0,46%</div></div>
+        <div class="metric-grid">
+          <div class="m"><span class="l">AUM</span><span class="v">US$ 14,15 bi</span></div>
+          <div class="m"><span class="l">Volume/dia</span><span class="v">~6,27 mi</span></div>
+          <div class="m"><span class="l">Yield</span><span class="v">14,03%</span></div>
+          <div class="m"><span class="l">Expense Ratio</span><span class="v flag">0,68% (maior)</span></div>
+          <div class="m"><span class="l">Lançamento</span><span class="v">Jan/2024</span></div>
+          <div class="m"><span class="l">Benchmark</span><span class="v">Nasdaq-100 (ref.)</span></div>
+          <div class="m"><span class="l">Overwrite</span><span class="v">Parcial (OTM)</span></div>
+          <div class="m"><span class="l">Contrato</span><span class="v">Section 1256</span></div>
+        </div>
+        <p class="tc-analysis">Maior yield da lista. Usa opções de índice diretas (Section 1256) e calls escalonadas fora do dinheiro sobre parte do book — <strong style="color:var(--ink)">não cobre 100%, preservando mais upside deliberadamente</strong>. NEOS lançou versão "boosted" (XQQI, ~20% yield) — monitore como alternativa futura.</p>
+      </div>
+
+      <div class="ticker-card">
+        <div class="tc-head"><div class="tc-name"><strong>SPHD</strong><span>Invesco S&amp;P 500 High Div Low Vol</span></div><div class="tc-position">US$ 1.774 · 4,87% · +7,06%</div></div>
+        <div class="metric-grid">
+          <div class="m"><span class="l">AUM</span><span class="v">US$ 3,43 bi</span></div>
+          <div class="m"><span class="l">Volume/dia</span><span class="v">~603 mil</span></div>
+          <div class="m"><span class="l">Yield</span><span class="v">4,48–4,69%</span></div>
+          <div class="m"><span class="l">Expense Ratio</span><span class="v">0,30%</span></div>
+          <div class="m"><span class="l">Holdings</span><span class="v">58</span></div>
+          <div class="m"><span class="l">P/E médio</span><span class="v">15,06</span></div>
+          <div class="m"><span class="l">Beta</span><span class="v">~0,60</span></div>
+          <div class="m"><span class="l">Overwrite</span><span class="v">N/A (sem opções)</span></div>
+        </div>
+        <p class="tc-analysis">Não usa opções — segue índice de 50 ações do S&amp;P 500 com maior yield e menor volatilidade (utilities, consumo básico, imobiliário, saúde). Menor P/E médio e beta da lista. Renda "tradicional" sem complexidade fiscal ou teto de upside dos covered call.</p>
+      </div>
+
+      <div class="ticker-card">
+        <div class="tc-head"><div class="tc-name"><strong>EIMI.XLON</strong><span>iShares Core MSCI EM IMI UCITS</span></div><div class="tc-position">US$ 55 · 0,15% · +6,58% <span class="flag">(posição imaterial)</span></div></div>
+        <div class="metric-grid">
+          <div class="m"><span class="l">AUM</span><span class="v">~US$ 43,9 bi</span></div>
+          <div class="m"><span class="l">Volume/dia</span><span class="v">~503 mil (LSE)</span></div>
+          <div class="m"><span class="l">Yield</span><span class="v flag">N/A ⑧</span></div>
+          <div class="m"><span class="l">Expense Ratio</span><span class="v">0,18%</span></div>
+          <div class="m"><span class="l">Holdings</span><span class="v">2.993</span></div>
+          <div class="m"><span class="l">Top países</span><span class="v">TW 27%, KR 22%, CN 16%</span></div>
+          <div class="m"><span class="l">Benchmark</span><span class="v">MSCI EM IMI</span></div>
+          <div class="m"><span class="l">Overwrite</span><span class="v">N/A</span></div>
+        </div>
+        <p class="tc-analysis">Único fundo não-covered-call e não-US da lista. Réplica física do MSCI EM IMI, ~2.993 holdings (inclui small/mid caps de emergentes). Alta concentração em Ásia e semicondutores (TSMC+Samsung ~20%). Posição imaterial (0,15%) — não muda leitura geral.</p>
+        <p class="tc-note">⑧ Pode ser a classe acumulativa (reinveste dividendos) — confirme na Avenue qual classe você detém.</p>
+      </div>
+
+    </section>
+  </div><!-- /euatab-panel-etfs -->
+
+  <!-- EUA → Oportunidades -->
+  <div id="euatab-panel-opps" class="subtabpanel">
+    <section>
+      <h2>EUA — Oportunidades de novo aporte</h2>
+      <p class="lede">Posições não detidas atualmente. Research Note — confirme valuation e tese com advisor antes de agir. Dado que EUA já está 50,4% (acima do teto de 30%), novas posições aqui devem idealmente substituir outras, não aumentar exposição USD.</p>
+
+      <div class="opp-card">
+        <div class="opp-head">
+          <div class="opp-ticker"><strong>META</strong><span>Meta Platforms</span></div>
+          <span class="opp-tag">Tech · Publicidade · IA</span>
+        </div>
+        <p class="opp-thesis">Maior rede social do mundo com monetização por anúncios resiliente a ciclos econômicos, investimento agressivo em IA generativa (Llama, open-source), e hardware AR/VR (Quest). P/E ~22x é atrativo vs peers de tech — única das mega caps com múltiplo abaixo da média do mercado.</p>
+        <div class="opp-metrics">P/E ~22x · ROE ~35% · Mg. Líquida ~36% · Crescimento receita ~20% a.a. · Div. Yield ~0,4%</div>
+        <div class="tc-coverage">
+          <span class="cov-chip buy">Goldman Sachs · Buy (US$800)</span>
+          <span class="cov-chip buy">Morgan Stanley · Overweight (US$750)</span>
+          <span class="cov-chip buy">JPMorgan · Buy</span>
+          <span class="cov-chip buy">Consenso · 55 Buy / 8 Hold / 0 Sell</span>
+        </div>
+        <div class="opp-size"><strong>Tamanho sugerido:</strong> US$1.500–2.500 substituindo SMCI ou PLTR. Complementa MSFT/GOOGL com exposição em publicidade digital e open-source AI. <strong>Risco:</strong> regulação antitruste, dependência de publicidade cíclica.</div>
+      </div>
+
+      <div class="opp-card">
+        <div class="opp-head">
+          <div class="opp-ticker"><strong>AMZN</strong><span>Amazon.com</span></div>
+          <span class="opp-tag">Cloud · E-commerce</span>
+        </div>
+        <p class="opp-thesis">AWS é o segmento de maior margem e crescimento, dominando cloud corporativa. Retail voltou à lucratividade após anos de investimento. Única mega cap de tech não presente na carteira — preenche lacuna de cloud/retail com valuation razoável para o crescimento esperado.</p>
+        <div class="opp-metrics">P/E ~35x · ROE ~18% · AWS Mg. Operacional ~37% · Crescimento receita ~12% a.a.</div>
+        <div class="tc-coverage">
+          <span class="cov-chip buy">Goldman Sachs · Buy (US$280)</span>
+          <span class="cov-chip buy">JPMorgan · Overweight (US$295)</span>
+          <span class="cov-chip buy">Bank of America · Buy</span>
+          <span class="cov-chip buy">Consenso · 65 Buy / 3 Hold / 0 Sell</span>
+        </div>
+        <div class="opp-size"><strong>Tamanho sugerido:</strong> US$1.500–2.000 substituindo posição reduzida. <strong>Risco:</strong> capex de IA elevado comprimindo FCL, regulação antitruste.</div>
+      </div>
+
+      <div class="opp-card">
+        <div class="opp-head">
+          <div class="opp-ticker"><strong>BRK.B</strong><span>Berkshire Hathaway B</span></div>
+          <span class="opp-tag">Diversificado · Defensivo</span>
+        </div>
+        <p class="opp-thesis">US$300bi+ em caixa/Treasuries — funciona na prática como um "fundo DI americano de alta qualidade" gerenciado pela melhor alocadora de capital da história. Defende a carteira em quedas e dá exposição a seguro (GEICO), ferrovias (BNSF), energia, e um portfólio de ações de qualidade (AAPL, BofA, Coca-Cola, Chevron). Greg Abel identificado como sucessor de Buffett.</p>
+        <div class="opp-metrics">P/B ~1,6x · ROE ~14% · Sem dívida líquida · Portfólio diversificado real · Sem dividendo (buybacks)</div>
+        <div class="tc-coverage">
+          <span class="cov-chip none">Buffett recusa guidance — sem rating Buy/Sell convencional</span>
+          <span class="cov-chip buy">Amplamente recomendado como âncora defensiva</span>
+        </div>
+        <div class="opp-size"><strong>Tamanho sugerido:</strong> US$2.000–3.000 — substitui caixa idle em Avenue com retorno real esperado acima de Treasuries. <strong>Risco:</strong> sucessão, concentração em AAPL dentro do portfólio da Berkshire.</div>
+      </div>
+
+      <div class="opp-card">
+        <div class="opp-head">
+          <div class="opp-ticker"><strong>COST</strong><span>Costco Wholesale</span></div>
+          <span class="opp-tag">Consumo · Membership</span>
+        </div>
+        <p class="opp-thesis">Modelo de membership (92% de renovação) cria receita previsível e fidelidade extrema. Crescimento de sócios quase garantido de receita. Defensivo em recessão — os clientes não cancelam Costco. Margem líquida aparentemente baixa (~2,9%) é intencional: vendem quase a custo, lucram na membership fee com alta visibilidade.</p>
+        <div class="opp-metrics">P/E ~52x (caro, justificado pela previsibilidade) · ROE ~30% · Taxa renovação ~92% · Mg. Líquida ~2,9%</div>
+        <div class="tc-coverage">
+          <span class="cov-chip buy">Goldman Sachs · Buy</span>
+          <span class="cov-chip buy">JPMorgan · Overweight</span>
+          <span class="cov-chip buy">Consenso · 38 Buy / 8 Hold / 1 Sell</span>
+        </div>
+        <div class="opp-size"><strong>Tamanho sugerido:</strong> US$1.000–1.500 apenas — valuation esticado limita o tamanho. <strong>Risco:</strong> desaceleração do consumidor americano, valuation premium.</div>
+      </div>
+
+    </section>
+  </div><!-- /euatab-panel-opps -->
+
+</div><!-- /panel-eua -->
+
+</div><!-- /wrap -->
+
+<footer class="disclaimer">
+  <div class="wrap">
+    <p><strong>Isto não é consultoria de investimentos licenciada.</strong> Classificações de bancos (Buy/Hold/Sell) são opiniões de terceiros reportadas — a decisão final é sua.</p>
+    <p><strong>Confirme com um contador/CPA</strong> antes de qualquer operação real, especialmente tributação cross-border Brasil–EUA (Lei 14.754/2023). Múltiplos e preços-alvo mudam rápido — fotografia de 15/08/2026.</p>
+  </div>
+</footer>

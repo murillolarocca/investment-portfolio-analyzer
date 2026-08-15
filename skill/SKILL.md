@@ -1,6 +1,6 @@
 ---
 name: investment-portfolio-analyzer
-description: Investment Portfolio Analyzer (IPA) — ferramenta de apoio à decisão para analisar e propor rebalanceamento de carteira de investimentos, calculando ganhos e perdas por posição e sempre minimizando GCAP e impostos a pagar em qualquer operação proposta. Suporta corretoras brasileiras (B3/BRL) e americanas (NYSE/NASDAQ/USD). Use esta skill sempre que o usuário pedir para "rebalancear carteira", "analisar meus investimentos", "revisar minha alocação", mencionar Selic, IRPF/imposto sobre ações ou dividendos, GCAP, ganho de capital, ou anexar extrato/posição de corretora e pedir uma opinião sobre o que fazer com ela. Dispare também em pedidos mais vagos como "dá uma olhada na minha carteira" ou "isso tá bom ou devia mexer em algo" quando o contexto for investimentos pessoais.
+description: Investment Portfolio Analyzer (IPA) — ferramenta de apoio à decisão para analisar e propor rebalanceamento de carteira de investimentos, calculando ganhos e perdas por posição e sempre minimizando GCAP e impostos a pagar em qualquer operação proposta. Toda a análise é feita localmente com os dados fornecidos pelo usuário — nenhuma informação sigilosa ou confidencial da carteira ou da pessoa é transmitida a terceiros ou armazenada externamente. Os dados de entrada ficam apenas na sessão atual. Suporta corretoras brasileiras (B3/BRL) e americanas (NYSE/NASDAQ/USD). Formatos de entrada aceitos: prints/screenshots da carteira, arquivos CSV ou XLS exportados da corretora, extratos de investimento e PDFs consolidados. Use esta skill sempre que o usuário pedir para "rebalancear carteira", "analisar meus investimentos", "revisar minha alocação", mencionar Selic, IRPF/imposto sobre ações ou dividendos, GCAP, ganho de capital, ou anexar extrato/posição de corretora e pedir uma opinião sobre o que fazer com ela. Dispare também em pedidos mais vagos como "dá uma olhada na minha carteira" ou "isso tá bom ou devia mexer em algo" quando o contexto for investimentos pessoais.
 ---
 
 # Investment Portfolio Analyzer (IPA)
@@ -13,11 +13,23 @@ Ela **não é consultoria financeira licenciada**. Nunca se apresente como tal. 
 - Os números são estimativas de cálculo, não recomendação personalizada de investimento.
 - Regras tributárias — especialmente a tributação cross-border Brasil/EUA — mudam com frequência (ex: Lei 14.754/2023 mudou como investimentos no exterior são tributados) e devem ser confirmadas com um contador/CPA antes de qualquer operação real, principalmente se o valor envolvido for grande.
 
+## Privacidade e segurança dos dados
+
+Toda a análise é realizada **localmente**, com os dados que o usuário fornece na sessão. O IPA não transmite nenhuma informação sigilosa ou confidencial da carteira ou da pessoa a terceiros, não armazena dados externamente e não acessa nenhum sistema de corretora por conta própria. Os dados ficam restritos à sessão atual do Claude Code.
+
 ## Passo 1 — Coletar os dados
 
-Peça ao usuário o extrato/posição consolidada mais recente da(s) corretora(s) que ele usa — brasileira(s) e/ou americana(s) — em PDF, CSV ou print. Não peça login nem credenciais — o usuário exporta e anexa manualmente. Se ele preferir colar os dados direto no chat (texto ou tabela), aceite normalmente.
+Peça ao usuário os dados da(s) corretora(s) que ele usa — brasileira(s) e/ou americana(s). Os formatos aceitos são:
 
-**Screenshots/fotos da tela também são um formato de entrada válido.** Ao extrair de screenshot, redobre o cuidado com:
+- **Prints / screenshots** da carteira (tela do app ou plataforma web)
+- **Arquivos CSV ou XLS** exportados diretamente da corretora
+- **Extratos de investimento** (PDF ou imagem)
+- **PDFs consolidados** de posição
+- **Texto colado diretamente no chat** (tabela, lista ou formato livre)
+
+Não peça login nem credenciais — o usuário exporta e anexa manualmente. Se ele preferir colar os dados direto no chat, aceite normalmente.
+
+**Ao extrair de screenshots/prints, redobre o cuidado com:**
 - Números cortados nas bordas da tela, ou tooltips/pop-ups cobrindo parte do valor.
 - Formatação BR vs. US confundível (ex: "1.234,56" é mil e duzentos, não 1234 vírgula 56).
 - Falta de histórico de data/preço de compra — screenshots de posição atual costumam mostrar preço médio e valor atual, mas raramente a data de aquisição; se faltar, siga o Passo 3.5.

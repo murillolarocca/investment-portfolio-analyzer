@@ -4,6 +4,8 @@
 
 Built for investors holding positions across Brazilian and US brokers, with full coverage of cross-border taxation (Brazil/USA), Selic benchmark comparison, and per-trade tax cost calculation.
 
+> **Privacy:** IPA analyzes your data locally within your Claude Code session. No portfolio data, personal information, or confidential financial details are transmitted to third parties or stored externally.
+
 ---
 
 ## Core features
@@ -45,7 +47,7 @@ The dashboard includes:
 ### Prerequisites
 
 - [Claude Code](https://claude.ai/code) (any plan with skills support)
-- Brokerage statements from your Brazilian and/or US broker — PDF, CSV, screenshot, or pasted text
+- Data from your broker in any supported format: **screenshots/prints**, **CSV or XLS exports**, **investment statements**, **consolidated PDFs**, or **text pasted directly into chat**
 
 ### Install IPA
 
@@ -90,7 +92,7 @@ Quick summary:
 | Currency | Yes | BRL or USD |
 | Broker | Yes | Brazilian or US |
 
-Accepted formats: PDF export, CSV, screenshot/photo, or pasted text.
+**Accepted formats:** screenshots/prints of the portfolio app · CSV or XLS exported from the broker · investment statements · consolidated PDFs · text pasted directly into chat
 
 ---
 

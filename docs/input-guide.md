@@ -1,6 +1,21 @@
 # Input Guide — What data to provide
 
-The Investment Portfolio Analyzer (IPA) accepts portfolio data in any of these formats: **PDF export**, **CSV**, **screenshot or photo**, or **text pasted directly into chat**. You don't need to format it in a specific way — Claude will extract the relevant fields automatically.
+## Privacy first
+
+IPA analyzes your data **locally**, within your Claude Code session. No portfolio data, personal information, or confidential financial details are transmitted to third parties or stored externally. Your data stays in the current session only.
+
+## Accepted formats
+
+The Investment Portfolio Analyzer (IPA) accepts portfolio data in any of the following formats — no specific structure required, Claude extracts the relevant fields automatically:
+
+| Format | Description |
+|--------|-------------|
+| **Screenshots / prints** | Photos or screenshots of your broker app or web platform |
+| **CSV files** | Exported directly from your broker's platform |
+| **XLS / XLSX files** | Excel exports from your broker |
+| **Investment statements** | PDF or image statements issued by the broker |
+| **Consolidated PDFs** | Position summary PDFs (e.g., "posição consolidada") |
+| **Pasted text** | Table, list, or free-form text copied directly into the chat |
 
 ---
 

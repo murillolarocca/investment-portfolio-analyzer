@@ -1,0 +1,1181 @@
+<title>IPA — Exemplo de Carteira</title>
+<style>
+/* ── Tokens ── */
+:root{
+  --bg:#f0f4fb;--surface:#ffffff;--surface-2:#e8edf8;--surface-3:#dde5f4;
+  --ink:#0e1c33;--ink-2:#3a5275;--ink-muted:#6a84a8;
+  --border:rgba(20,55,110,0.13);--grid:#c8d6ec;
+  --navy:#1c3d6e;--pine:#0b6b4a;--rust:#b83522;--amber:#c07b0e;--teal:#0b7fa0;
+  --good:#0b6b4a;--warn:#c07b0e;--crit:#b83522;--info:#1c3d6e;
+  --good-bg:color-mix(in srgb,#0b6b4a 10%,transparent);
+  --warn-bg:color-mix(in srgb,#c07b0e 12%,transparent);
+  --crit-bg:color-mix(in srgb,#b83522 10%,transparent);
+  --info-bg:color-mix(in srgb,#1c3d6e 10%,transparent);
+  color-scheme:light;
+}
+@media(prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#0b1628;--surface:#101e36;--surface-2:#162540;--surface-3:#1c2e4e;
+    --ink:#dce8f8;--ink-2:#8aaad0;--ink-muted:#4f6e94;
+    --border:rgba(120,165,230,0.12);--grid:#1c2e4e;
+    --navy:#5b8ec7;--pine:#22c585;--rust:#e86045;--amber:#e8a830;--teal:#2ad4f8;
+    --good:#22c585;--warn:#e8a830;--crit:#e86045;--info:#5b8ec7;
+    --good-bg:color-mix(in srgb,#22c585 12%,transparent);
+    --warn-bg:color-mix(in srgb,#e8a830 12%,transparent);
+    --crit-bg:color-mix(in srgb,#e86045 12%,transparent);
+    --info-bg:color-mix(in srgb,#5b8ec7 12%,transparent);
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0b1628;--surface:#101e36;--surface-2:#162540;--surface-3:#1c2e4e;
+  --ink:#dce8f8;--ink-2:#8aaad0;--ink-muted:#4f6e94;
+  --border:rgba(120,165,230,0.12);--grid:#1c2e4e;
+  --navy:#5b8ec7;--pine:#22c585;--rust:#e86045;--amber:#e8a830;--teal:#2ad4f8;
+  --good:#22c585;--warn:#e8a830;--crit:#e86045;--info:#5b8ec7;
+  --good-bg:color-mix(in srgb,#22c585 12%,transparent);
+  --warn-bg:color-mix(in srgb,#e8a830 12%,transparent);
+  --crit-bg:color-mix(in srgb,#e86045 12%,transparent);
+  --info-bg:color-mix(in srgb,#5b8ec7 12%,transparent);
+  color-scheme:dark;
+}
+
+/* ── Reset / base ── */
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",sans-serif;font-size:14.5px;line-height:1.55;-webkit-font-smoothing:antialiased}
+.num{font-variant-numeric:tabular-nums;font-family:"Fira Code","Cascadia Code","Roboto Mono",monospace}
+
+/* ── Layout ── */
+.wrap{max-width:1080px;margin:0 auto;padding:24px 16px 64px}
+
+/* ── Header ── */
+.hd{display:flex;flex-wrap:wrap;gap:12px 28px;justify-content:space-between;align-items:flex-end;padding-bottom:20px;border-bottom:2px solid var(--navy);margin-bottom:24px}
+.hd-left h1{font-family:Georgia,"Times New Roman",serif;font-size:22px;font-weight:700;letter-spacing:-0.02em;color:var(--navy);margin-bottom:3px}
+.hd-badge{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;padding:3px 10px;border-radius:999px;background:var(--info-bg);color:var(--navy)}
+.hd-meta{font-size:12px;color:var(--ink-muted);line-height:1.9;text-align:right}
+.hd-meta strong{color:var(--ink-2);font-weight:600}
+
+/* ── Main tabs ── */
+.tabs-main{display:flex;gap:2px;background:var(--surface-2);border-radius:10px;padding:3px;margin-bottom:24px;overflow-x:auto}
+.tabs-main button{flex:1;min-width:fit-content;padding:8px 16px;border:none;background:transparent;border-radius:8px;font-size:13.5px;font-weight:600;color:var(--ink-2);cursor:pointer;white-space:nowrap;transition:background .15s,color .15s}
+.tabs-main button:hover{background:var(--surface-3);color:var(--ink)}
+.tabs-main button.active{background:var(--surface);color:var(--navy);box-shadow:0 1px 4px rgba(0,0,0,.1)}
+
+/* ── Sub tabs ── */
+.tabs-sub{display:flex;gap:0;border-bottom:1px solid var(--border);margin-bottom:20px}
+.tabs-sub button{padding:8px 18px;border:none;background:transparent;border-bottom:2px solid transparent;margin-bottom:-1px;font-size:13px;font-weight:600;color:var(--ink-muted);cursor:pointer;transition:color .15s,border-color .15s}
+.tabs-sub button:hover{color:var(--ink)}
+.tabs-sub button.active{color:var(--navy);border-bottom-color:var(--navy)}
+
+/* ── Tab panels ── */
+.tab-panel{display:none}
+.tab-panel.active{display:block}
+.sub-panel{display:none}
+.sub-panel.active{display:block}
+
+/* ── Section ── */
+section{margin-bottom:28px}
+.sh{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:0.09em;color:var(--ink-muted);margin-bottom:10px}
+.lede{font-size:13px;color:var(--ink-2);margin-bottom:14px;max-width:80ch;line-height:1.6}
+
+/* ── KPIs ── */
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(155px,1fr));gap:9px;margin-bottom:28px}
+.kpi{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:13px 15px}
+.kpi .l{font-size:10px;text-transform:uppercase;letter-spacing:0.06em;color:var(--ink-muted);margin-bottom:5px;font-weight:700}
+.kpi .v{font-family:Georgia,serif;font-size:21px;font-weight:700;letter-spacing:-0.02em;color:var(--ink);line-height:1.2}
+.kpi .v.sm{font-size:15px}
+.kpi .f{font-size:11.5px;color:var(--ink-2);margin-top:4px}
+.kpi .f.g{color:var(--good);font-weight:600}
+.kpi .f.w{color:var(--warn);font-weight:600}
+.kpi .f.c{color:var(--crit);font-weight:600}
+
+/* ── Allocation bars ── */
+.alloc-list{display:flex;flex-direction:column;gap:18px}
+.alloc-row .rh{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px;font-size:13px}
+.alloc-row .nm{font-weight:600}
+.alloc-row .vv{font-size:12px;color:var(--ink-2)}
+.track{position:relative;height:20px;background:var(--surface-2);border-radius:5px;border:1px solid var(--border)}
+.band{position:absolute;top:0;bottom:0;background:var(--grid);opacity:.7;border-radius:2px}
+.bar{position:absolute;top:3px;bottom:3px;left:0;border-radius:3px;transition:width .4s}
+.bar.g{background:var(--good)}
+.bar.w{background:var(--warn)}
+.bar.c{background:var(--crit)}
+.bar.b{background:var(--info)}
+.mid-tick{position:absolute;top:-3px;bottom:-3px;width:1.5px;background:var(--ink-muted);opacity:.5}
+.alloc-legend{display:flex;flex-wrap:wrap;gap:10px 18px;margin-top:14px;font-size:11.5px;color:var(--ink-2)}
+.alloc-legend span{display:inline-flex;align-items:center;gap:5px}
+.sw{width:10px;height:10px;border-radius:2px;flex:none}
+
+/* ── Drift ── */
+.drift-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:10px}
+.drift-card{background:var(--surface);border:1px solid var(--border);border-radius:9px;padding:12px 14px}
+.drift-card .dc-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.drift-card .dc-name{font-size:13px;font-weight:600}
+.drift-card .dc-val{font-family:Georgia,serif;font-size:16px;font-weight:700}
+.drift-card .dc-val.ov{color:var(--crit)}
+.drift-card .dc-val.un{color:var(--info)}
+.drift-card .dc-val.ok{color:var(--good)}
+.dtrack{position:relative;height:14px;background:var(--surface-2);border-radius:4px;border:1px solid var(--border);margin-bottom:6px}
+.dctr{position:absolute;top:-2px;bottom:-2px;left:50%;width:1px;background:var(--ink-muted);opacity:.5}
+.dbar{position:absolute;top:2px;bottom:2px;border-radius:3px}
+.dbar.ov{background:var(--crit)}
+.dbar.un{background:var(--info)}
+.drift-card .dc-range{font-size:11px;color:var(--ink-muted)}
+
+/* ── Selic comparison ── */
+.bench-row{display:flex;flex-wrap:wrap;gap:10px}
+.bench-card{flex:1;min-width:160px;background:var(--surface);border:1px solid var(--border);border-radius:9px;padding:12px 14px;text-align:center}
+.bench-card .bl{font-size:10px;text-transform:uppercase;letter-spacing:0.06em;color:var(--ink-muted);margin-bottom:5px;font-weight:700}
+.bench-card .bv{font-family:Georgia,serif;font-size:20px;font-weight:700}
+.bench-card .bf{font-size:11.5px;color:var(--ink-2);margin-top:3px}
+
+/* ── Alerts ── */
+.alerts{display:flex;flex-direction:column;gap:8px}
+.alert{display:flex;gap:10px;padding:11px 14px;border-radius:9px;border:1px solid var(--border);background:var(--surface);font-size:13px;align-items:flex-start}
+.chip-badge{flex:none;font-size:9.5px;font-weight:800;text-transform:uppercase;letter-spacing:0.05em;padding:3px 8px;border-radius:5px;white-space:nowrap;margin-top:2px}
+.alert.c .chip-badge{background:var(--crit-bg);color:var(--crit)}
+.alert.w .chip-badge{background:var(--warn-bg);color:var(--warn)}
+.alert.g .chip-badge{background:var(--good-bg);color:var(--good)}
+.alert.i .chip-badge{background:var(--info-bg);color:var(--navy)}
+.alert p{color:var(--ink-2);margin:0;font-size:13px}
+.alert p strong{color:var(--ink)}
+
+/* ── Tables ── */
+.tbl-wrap{overflow-x:auto;border:1px solid var(--border);border-radius:10px}
+table{width:100%;border-collapse:collapse;font-size:13px;min-width:540px}
+thead th{text-align:left;font-size:9.5px;text-transform:uppercase;letter-spacing:0.06em;color:var(--ink-muted);font-weight:700;padding:9px 13px;background:var(--surface-2);border-bottom:1px solid var(--border);white-space:nowrap}
+tbody td{padding:8px 13px;border-bottom:1px solid var(--border);white-space:nowrap;vertical-align:middle}
+tbody tr:last-child td{border-bottom:none}
+tbody tr:hover{background:var(--surface-2)}
+td.r,th.r{text-align:right}
+.pos{color:var(--good);font-weight:600}
+.neg{color:var(--crit);font-weight:600}
+tfoot td{padding:9px 13px;font-weight:700;border-top:2px solid var(--border);background:var(--surface-2)}
+.chip{display:inline-block;font-size:9.5px;font-weight:700;padding:2px 7px;border-radius:999px;white-space:nowrap}
+.chip.ab{background:var(--good-bg);color:var(--good)}
+.chip.ov{background:var(--crit-bg);color:var(--crit)}
+.chip.at{background:var(--warn-bg);color:var(--warn)}
+.chip.na{background:var(--surface-2);color:var(--ink-muted)}
+.chip.is{background:var(--good-bg);color:var(--good)}
+
+/* ── Dividends ── */
+.div-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px}
+.div-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px 15px}
+.div-card .dn{font-size:13.5px;font-weight:700;margin-bottom:8px;color:var(--ink)}
+.div-row{display:flex;justify-content:space-between;font-size:12px;color:var(--ink-2);padding:5px 0;border-bottom:1px solid var(--border)}
+.div-row:last-child{border-bottom:none;font-weight:700;color:var(--ink)}
+.div-row strong{color:var(--ink)}
+
+/* ── Proposals ── */
+.proposals{display:flex;flex-direction:column;gap:10px}
+.prop{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:15px 17px}
+.prop .ptag{font-size:9.5px;font-weight:800;text-transform:uppercase;letter-spacing:0.06em;color:var(--navy);margin-bottom:5px}
+.prop h3{font-size:14px;font-weight:700;margin-bottom:5px;color:var(--ink)}
+.prop p{font-size:13px;color:var(--ink-2);line-height:1.6}
+.tax-row{display:flex;flex-wrap:wrap;gap:12px;margin-top:11px;padding:10px 12px;background:var(--surface-2);border-radius:7px;border:1px solid var(--border)}
+.tax-cell .tl{font-size:9.5px;text-transform:uppercase;letter-spacing:0.05em;color:var(--ink-muted);font-weight:700;margin-bottom:3px}
+.tax-cell .tv{font-size:14px;font-weight:700;font-family:Georgia,serif}
+.prop.no-rec{border-color:color-mix(in srgb,var(--crit) 28%,transparent)}
+.prop.no-rec .ptag{color:var(--crit)}
+
+/* ── GCAP map ── */
+.gcap-intro{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px 18px;margin-bottom:16px}
+.gcap-intro h3{font-size:15px;font-weight:700;margin-bottom:6px;color:var(--navy)}
+.gcap-intro p{font-size:13px;color:var(--ink-2);line-height:1.6}
+.compare-box{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
+.cmp{border-radius:9px;padding:13px 15px;border:1px solid var(--border)}
+.cmp.sem{background:var(--crit-bg);border-color:color-mix(in srgb,var(--crit) 25%,transparent)}
+.cmp.com{background:var(--good-bg);border-color:color-mix(in srgb,var(--good) 25%,transparent)}
+.cmp .cl{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-muted);margin-bottom:4px}
+.cmp .cv{font-family:Georgia,serif;font-size:22px;font-weight:700}
+.cmp.sem .cv{color:var(--crit)}
+.cmp.com .cv{color:var(--good)}
+.cmp .cf{font-size:12px;color:var(--ink-2);margin-top:3px}
+.econ{font-size:13px;font-weight:700;text-align:center;margin-top:12px;padding:10px;background:var(--good-bg);border-radius:8px;color:var(--good)}
+
+/* ── Step tracker ── */
+.steps{display:flex;flex-direction:column;gap:0}
+.step{display:flex;gap:14px;position:relative}
+.step:not(:last-child) .step-line{position:absolute;left:15px;top:32px;bottom:0;width:1px;background:var(--border)}
+.step-num{flex:none;width:30px;height:30px;border-radius:50%;background:var(--navy);color:#fff;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;z-index:1}
+.step-body{flex:1;padding-bottom:20px}
+.step-body h4{font-size:14px;font-weight:700;margin-bottom:4px;color:var(--ink)}
+.step-body p{font-size:13px;color:var(--ink-2);line-height:1.6;margin-bottom:8px}
+.step-tax{display:flex;flex-wrap:wrap;gap:8px 16px;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:9px 12px;font-size:12px}
+.step-tax .sk{color:var(--ink-muted);font-weight:700;text-transform:uppercase;font-size:9.5px;letter-spacing:.05em;display:block;margin-bottom:2px}
+.step-tax .sv{font-family:Georgia,serif;font-weight:700;font-size:14px}
+
+/* ── Isenção alert ── */
+.isencao-bar{display:flex;align-items:center;gap:10px;background:var(--good-bg);border:1px solid color-mix(in srgb,var(--good) 30%,transparent);border-radius:8px;padding:10px 13px;margin-top:14px;font-size:13px;color:var(--good)}
+.isencao-bar strong{color:var(--good)}
+
+/* ── Footer ── */
+footer{border-top:1px solid var(--border);background:var(--surface-2);padding:16px 18px}
+footer .inner{max-width:1080px;margin:0 auto}
+footer p{font-size:11.5px;color:var(--ink-muted);margin-bottom:4px;line-height:1.6}
+footer p:last-child{margin:0}
+footer strong{color:var(--ink-2)}
+
+@media(max-width:600px){
+  .compare-box{grid-template-columns:1fr}
+  .kpis{grid-template-columns:1fr 1fr}
+}
+</style>
+
+<div class="wrap">
+
+<!-- ── Header ── -->
+<header class="hd">
+  <div class="hd-left">
+    <h1>📊 Carteira Exemplo</h1>
+    <div class="hd-badge">Perfil Moderado · IPA Demo · Dados Fictícios</div>
+  </div>
+  <div class="hd-meta">
+    15/08/2026 &nbsp;·&nbsp; US$1 = R$5,19 &nbsp;·&nbsp; Selic <strong>14,00% a.a.</strong>
+  </div>
+</header>
+
+<!-- ── KPIs ── -->
+<div class="kpis">
+  <div class="kpi"><div class="l">Patrimônio Total</div><div class="v num">R$ 280.000</div><div class="f">Corretora A (BR) + Corretora B (EUA)</div></div>
+  <div class="kpi"><div class="l">Brasil · Cor. A</div><div class="v num">R$ 168.000</div><div class="f num">60,0% da carteira</div></div>
+  <div class="kpi"><div class="l">EUA · Cor. B</div><div class="v num">R$ 112.000</div><div class="f num">40,0% · US$ 21.580</div></div>
+  <div class="kpi"><div class="l">Div. projetados/ano</div><div class="v sm num">≈ R$ 13.800</div><div class="f g num">4,93% do patrimônio</div></div>
+  <div class="kpi"><div class="l">Maior drift</div><div class="v num" style="color:var(--warn)">+17,5 p.p.</div><div class="f w">Renda Fixa BR — acima do teto</div></div>
+  <div class="kpi"><div class="l">GCAP estimado (proposta)</div><div class="v sm num" style="color:var(--good)">≈ R$ 89</div><div class="f g">Com compensação de perdas</div></div>
+</div>
+
+<!-- ── Main tab nav ── -->
+<nav class="tabs-main" id="nav-main">
+  <button class="active" data-tab="geral">Visão Geral</button>
+  <button data-tab="brasil">🇧🇷 Brasil</button>
+  <button data-tab="eua">🇺🇸 EUA</button>
+  <button data-tab="rebal">⚖️ Rebalanceamento</button>
+</nav>
+
+<!-- ════════════════════════════════════════════
+     TAB: Visão Geral
+════════════════════════════════════════════ -->
+<div class="tab-panel active" id="tab-geral">
+
+  <!-- Alocação por classe -->
+  <section>
+    <div class="sh">Alocação por Classe de Ativo — Atual vs. Faixa-Alvo</div>
+    <p class="lede">A faixa cinza representa a meta do perfil moderado. A barra colorida é a posição atual. O traço vertical marca o ponto médio da faixa — referência de drift.</p>
+    <div class="alloc-list">
+      <div class="alloc-row">
+        <div class="rh"><span class="nm">Renda Fixa Brasil <span style="font-weight:400;color:var(--ink-muted)">(Tesouro + CDB)</span></span><span class="vv num">45,0% · alvo 20–35%</span></div>
+        <div class="track">
+          <div class="band" style="left:20%;width:15%"></div>
+          <div class="mid-tick" style="left:27.5%"></div>
+          <div class="bar w" style="width:45%"></div>
+        </div>
+      </div>
+      <div class="alloc-row">
+        <div class="rh"><span class="nm">Ações Brasil</span><span class="vv num">13,4% · alvo 15–30%</span></div>
+        <div class="track">
+          <div class="band" style="left:15%;width:15%"></div>
+          <div class="mid-tick" style="left:22.5%"></div>
+          <div class="bar b" style="width:13.4%"></div>
+        </div>
+      </div>
+      <div class="alloc-row">
+        <div class="rh"><span class="nm">FIIs Brasil</span><span class="vv num">1,4% · alvo 3–8%</span></div>
+        <div class="track">
+          <div class="band" style="left:3%;width:5%"></div>
+          <div class="mid-tick" style="left:5.5%"></div>
+          <div class="bar b" style="width:1.4%"></div>
+        </div>
+      </div>
+      <div class="alloc-row">
+        <div class="rh"><span class="nm">Ações EUA</span><span class="vv num">30,0% · alvo 15–25%</span></div>
+        <div class="track">
+          <div class="band" style="left:15%;width:10%"></div>
+          <div class="mid-tick" style="left:20%"></div>
+          <div class="bar w" style="width:30%"></div>
+        </div>
+      </div>
+      <div class="alloc-row">
+        <div class="rh"><span class="nm">ETFs EUA <span style="font-weight:400;color:var(--ink-muted)">(yield + índice)</span></span><span class="vv num">10,7% · alvo 5–15%</span></div>
+        <div class="track">
+          <div class="band" style="left:5%;width:10%"></div>
+          <div class="mid-tick" style="left:10%"></div>
+          <div class="bar g" style="width:10.7%"></div>
+        </div>
+      </div>
+    </div>
+    <div class="alloc-legend">
+      <span><span class="sw" style="background:var(--grid);border:1px solid var(--border)"></span>Faixa-alvo</span>
+      <span><span class="sw" style="background:var(--ink-muted);opacity:.5"></span>Meio da faixa</span>
+      <span><span class="sw" style="background:var(--good)"></span>Na faixa</span>
+      <span><span class="sw" style="background:var(--warn)"></span>Fora da faixa</span>
+      <span><span class="sw" style="background:var(--info)"></span>Abaixo da faixa</span>
+    </div>
+  </section>
+
+  <!-- Drift -->
+  <section>
+    <div class="sh">Drift por Classe (desvio do meio da faixa)</div>
+    <div class="drift-grid">
+      <div class="drift-card">
+        <div class="dc-head"><span class="dc-name">Renda Fixa Brasil</span><span class="dc-val ov num">+17,5 p.p.</span></div>
+        <div class="dtrack"><div class="dctr"></div><div class="dbar ov" style="left:50%;width:29.2%"></div></div>
+        <div class="dc-range">Atual 45,0% · Alvo 27,5%</div>
+      </div>
+      <div class="drift-card">
+        <div class="dc-head"><span class="dc-name">Ações Brasil</span><span class="dc-val un num">−9,1 p.p.</span></div>
+        <div class="dtrack"><div class="dctr"></div><div class="dbar un" style="right:50%;width:15.2%"></div></div>
+        <div class="dc-range">Atual 13,4% · Alvo 22,5%</div>
+      </div>
+      <div class="drift-card">
+        <div class="dc-head"><span class="dc-name">FIIs Brasil</span><span class="dc-val un num">−4,1 p.p.</span></div>
+        <div class="dtrack"><div class="dctr"></div><div class="dbar un" style="right:50%;width:6.8%"></div></div>
+        <div class="dc-range">Atual 1,4% · Alvo 5,5%</div>
+      </div>
+      <div class="drift-card">
+        <div class="dc-head"><span class="dc-name">Ações EUA</span><span class="dc-val ov num">+10,0 p.p.</span></div>
+        <div class="dtrack"><div class="dctr"></div><div class="dbar ov" style="left:50%;width:16.7%"></div></div>
+        <div class="dc-range">Atual 30,0% · Alvo 20,0%</div>
+      </div>
+      <div class="drift-card">
+        <div class="dc-head"><span class="dc-name">ETFs EUA</span><span class="dc-val ok num">+0,7 p.p.</span></div>
+        <div class="dtrack"><div class="dctr"></div><div class="dbar ov" style="left:50%;width:1.2%"></div></div>
+        <div class="dc-range">Atual 10,7% · Alvo 10,0% ✓</div>
+      </div>
+    </div>
+    <div style="margin-top:6px;font-size:11px;color:var(--ink-muted)">Escala das barras: −30 a +30 p.p. · Drift ≥ 5 p.p. geralmente justifica ação.</div>
+  </section>
+
+  <!-- Selic benchmark -->
+  <section>
+    <div class="sh">Comparativo com Selic Mensal</div>
+    <div class="bench-row">
+      <div class="bench-card">
+        <div class="bl">Selic a.a.</div>
+        <div class="bv num" style="color:var(--amber)">14,00%</div>
+        <div class="bf">Referência de performance</div>
+      </div>
+      <div class="bench-card">
+        <div class="bl">Dividendos / Patrimônio</div>
+        <div class="bv num" style="color:var(--ink)">4,93%</div>
+        <div class="bf">Yield bruto combinado BR+EUA</div>
+      </div>
+      <div class="bench-card">
+        <div class="bl">RF BR (anualizado)</div>
+        <div class="bv num" style="color:var(--good)">~14,8%</div>
+        <div class="bf">Selic + spread CDB · IR 15%</div>
+      </div>
+      <div class="bench-card">
+        <div class="bl">Ganho médio ações BR</div>
+        <div class="bv num" style="color:var(--crit)">−2,1%</div>
+        <div class="bf">Cotação média vs. PM (posição atual)</div>
+      </div>
+      <div class="bench-card">
+        <div class="bl">Ganho médio ações EUA</div>
+        <div class="bv num" style="color:var(--good)">+12,6%</div>
+        <div class="bf">Cotação média vs. PM · em USD</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Alertas -->
+  <section>
+    <div class="sh">Alertas</div>
+    <div class="alerts">
+      <div class="alert c">
+        <span class="chip-badge">Crítico</span>
+        <p><strong>Renda Fixa em 45% — 10 p.p. acima do teto de 35%.</strong> Excesso de concentração em Tesouro Selic e CDB. Novos aportes devem ser direcionados a ações BR para corrigir o drift sem custo tributário.</p>
+      </div>
+      <div class="alert w">
+        <span class="chip-badge">Atenção</span>
+        <p><strong>EUA em 40% — 10 p.p. acima do teto de 30%.</strong> Exposição em USD acima do limite para o perfil moderado. A proposta de rebalanceamento libera ~US$5.600 para realocação.</p>
+      </div>
+      <div class="alert w">
+        <span class="chip-badge">Atenção</span>
+        <p><strong>SLOW-CO em queda de −24,2%:</strong> perda não realizada de US$575. Vender agora permite compensar ganhos de ACME3 e reduzir GCAP de R$537 → R$89. Não há perda de renda (sem dividendo).</p>
+      </div>
+      <div class="alert g">
+        <span class="chip-badge">Oportunidade</span>
+        <p><strong>TRAD5 pode ser vendida isenta de GCAP.</strong> Venda estimada R$1.740 (ganho R$390) — abaixo do limite de R$20.000/mês em ações BR → isento de IR. Libera capital para BANK4 ou ENER3.</p>
+      </div>
+      <div class="alert i">
+        <span class="chip-badge">Nota Tributária</span>
+        <p><strong>Vendas BR abaixo de R$20.000 no mês são isentas de GCAP</strong> (ações, swing trade). O limite é tudo-ou-nada — se as vendas do mês ultrapassarem R$20k, o ganho inteiro fica tributável. Nunca misture operações BR e EUA no mesmo cálculo de isenção.</p>
+      </div>
+    </div>
+  </section>
+
+</div><!-- /tab-geral -->
+
+
+<!-- ════════════════════════════════════════════
+     TAB: Brasil
+════════════════════════════════════════════ -->
+<div class="tab-panel" id="tab-brasil">
+
+  <nav class="tabs-sub" id="nav-br">
+    <button class="active" data-subtab="br-rf">Renda Fixa</button>
+    <button data-subtab="br-ac">Ações</button>
+    <button data-subtab="br-fi">FIIs</button>
+  </nav>
+
+  <!-- Sub: Renda Fixa -->
+  <div class="sub-panel active" id="tab-br-rf">
+    <section>
+      <div class="sh">Renda Fixa Brasil — R$ 126.000 · 45,0% da carteira</div>
+      <p class="lede">IR retido na fonte no resgate: tabela regressiva (22,5% &lt;6 m → 15% acima de 24 m para Tesouro Direto e CDB). Tesouro IPCA+ tem come-cotas semestral para fundos, mas não para investidor direto — apenas na venda/vencimento.</p>
+      <div class="tbl-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Título</th>
+              <th>Corretora</th>
+              <th class="r">Vencimento</th>
+              <th class="r">Custo</th>
+              <th class="r">Valor Atual</th>
+              <th class="r">Ganho Bruto</th>
+              <th class="r">IR estimado</th>
+              <th class="r">Taxa / Indexador</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Tesouro Selic 2031</strong></td>
+              <td style="color:var(--ink-muted)">Cor. A</td>
+              <td class="r">01/03/2031</td>
+              <td class="r num">R$ 64.200</td>
+              <td class="r num">R$ 70.000</td>
+              <td class="r num pos">+R$ 5.800</td>
+              <td class="r num">≈ R$ 870</td>
+              <td class="r num">Selic 14,00%</td>
+            </tr>
+            <tr>
+              <td><strong>CDB 110% CDI — Banco X</strong></td>
+              <td style="color:var(--ink-muted)">Cor. A</td>
+              <td class="r">15/06/2028</td>
+              <td class="r num">R$ 28.500</td>
+              <td class="r num">R$ 32.000</td>
+              <td class="r num pos">+R$ 3.500</td>
+              <td class="r num">≈ R$ 525</td>
+              <td class="r num">CDI 110% (~15,4%)</td>
+            </tr>
+            <tr>
+              <td><strong>Tesouro IPCA+ 2035</strong></td>
+              <td style="color:var(--ink-muted)">Cor. A</td>
+              <td class="r">15/05/2035</td>
+              <td class="r num">R$ 20.100</td>
+              <td class="r num">R$ 24.000</td>
+              <td class="r num pos">+R$ 3.900</td>
+              <td class="r num">≈ R$ 585</td>
+              <td class="r num">IPCA + 6,10%</td>
+            </tr>
+          </tbody>
+          <tfoot>
+            <tr>
+              <td colspan="3"><strong>Total Renda Fixa BR</strong></td>
+              <td class="r num">R$ 112.800</td>
+              <td class="r num">R$ 126.000</td>
+              <td class="r num pos">+R$ 13.200</td>
+              <td class="r num">≈ R$ 1.980</td>
+              <td class="r">IR alíq. 15% (prazo &gt; 24 m)</td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+      <div class="lede" style="margin-top:14px;font-size:12px">
+        <strong>Rendimento anual estimado (sobre valor atual):</strong> Tesouro Selic ≈ R$9.800/ano · CDB ≈ R$4.928/ano · IPCA+ variável conforme IPCA. IR já descontado das estimativas acima. Renda fixa não é dividendo — incluso para comparação com Selic.
+      </div>
+    </section>
+
+    <!-- Dividendos RF -->
+    <section>
+      <div class="sh">Renda Projetada — Renda Fixa</div>
+      <div class="div-grid">
+        <div class="div-card">
+          <div class="dn">Tesouro Selic 2031</div>
+          <div class="div-row"><span>Rendimento bruto/ano</span><strong>≈ R$ 9.800</strong></div>
+          <div class="div-row"><span>IR 15% (retido na fonte)</span><strong style="color:var(--crit)">−R$ 1.470</strong></div>
+          <div class="div-row"><span>Líquido estimado</span><strong>≈ R$ 8.330</strong></div>
+        </div>
+        <div class="div-card">
+          <div class="dn">CDB 110% CDI</div>
+          <div class="div-row"><span>Rendimento bruto/ano</span><strong>≈ R$ 4.928</strong></div>
+          <div class="div-row"><span>IR 15%</span><strong style="color:var(--crit)">−R$ 739</strong></div>
+          <div class="div-row"><span>Líquido estimado</span><strong>≈ R$ 4.189</strong></div>
+        </div>
+        <div class="div-card">
+          <div class="dn">Tesouro IPCA+ 2035</div>
+          <div class="div-row"><span>Juros semestrais (6,10%)</span><strong>≈ R$ 1.464/ano</strong></div>
+          <div class="div-row"><span>IR 15%</span><strong style="color:var(--crit)">−R$ 220</strong></div>
+          <div class="div-row"><span>Líquido estimado</span><strong>≈ R$ 1.244</strong></div>
+        </div>
+      </div>
+    </section>
+  </div><!-- /br-rf -->
+
+  <!-- Sub: Ações -->
+  <div class="sub-panel" id="tab-br-ac">
+    <section>
+      <div class="sh">Ações Brasil — R$ 36.000 · 12,9% da carteira</div>
+      <p class="lede">Dividendos de ações BR são isentos de IR para pessoa física. JCP sofre retenção de 15% na fonte — mostrado separadamente. Ganho de capital: isento para vendas mensais abaixo de R$20.000 (swing trade); 15% sobre o ganho para vendas acima desse limite.</p>
+      <div class="tbl-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Ticker</th><th>Qtd</th><th class="r">PM</th><th class="r">Cotação</th><th class="r">Var. s/ PM</th><th class="r">Valor</th><th class="r">Ganho Não Real.</th><th class="r">Yield div.</th><th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>BANK4</strong></td>
+              <td class="num">500</td>
+              <td class="r num">R$ 32,00</td>
+              <td class="r num">R$ 35,50</td>
+              <td class="r num pos">+10,9%</td>
+              <td class="r num">R$ 17.750</td>
+              <td class="r num pos">+R$ 1.750</td>
+              <td class="r num">8,5%</td>
+              <td><span class="chip ab">▲ Abaixo do alvo</span></td>
+            </tr>
+            <tr>
+              <td><strong>ENER3</strong></td>
+              <td class="num">500</td>
+              <td class="r num">R$ 22,80</td>
+              <td class="r num">R$ 21,50</td>
+              <td class="r num neg">−5,7%</td>
+              <td class="r num">R$ 10.750</td>
+              <td class="r num neg">−R$ 650</td>
+              <td class="r num">9,2%</td>
+              <td><span class="chip at">→ No alvo</span></td>
+            </tr>
+            <tr>
+              <td><strong>MINE3</strong></td>
+              <td class="num">120</td>
+              <td class="r num">R$ 55,10</td>
+              <td class="r num">R$ 48,00</td>
+              <td class="r num neg">−12,9%</td>
+              <td class="r num">R$ 5.760</td>
+              <td class="r num neg">−R$ 852</td>
+              <td class="r num">6,8%</td>
+              <td><span class="chip ov">▼ Acima do alvo</span></td>
+            </tr>
+            <tr>
+              <td><strong>TRAD5</strong><br><span style="font-size:11px;color:var(--warn)">↳ candidato a venda</span></td>
+              <td class="num">100</td>
+              <td class="r num">R$ 13,50</td>
+              <td class="r num">R$ 17,40</td>
+              <td class="r num pos">+28,9%</td>
+              <td class="r num">R$ 1.740</td>
+              <td class="r num pos">+R$ 390</td>
+              <td class="r num">1,2%</td>
+              <td><span class="chip ov">▼ Acima do alvo</span></td>
+            </tr>
+          </tbody>
+          <tfoot>
+            <tr>
+              <td colspan="5"><strong>Total Ações BR</strong></td>
+              <td class="r num">R$ 36.000</td>
+              <td class="r num" style="color:var(--ink-2)">+R$ 638 líq.</td>
+              <td class="r num">~7,9% médio</td>
+              <td></td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+      <div class="isencao-bar">
+        <strong>✓ Limite de isenção R$20.000/mês:</strong>&nbsp; Vender TRAD5 (R$1.740) = 8,7% do limite · Ganho de R$390 isento de GCAP neste mês.
+      </div>
+    </section>
+    <section>
+      <div class="sh">Dividendos — Ações Brasil</div>
+      <div class="div-grid">
+        <div class="div-card">
+          <div class="dn">BANK4 — yield 8,5%</div>
+          <div class="div-row"><span>Dividendos anuais (isento)</span><strong>≈ R$ 1.509/ano</strong></div>
+          <div class="div-row"><span>JCP c/ retenção 15%</span><strong>≈ R$ 310/ano líq.</strong></div>
+          <div class="div-row"><span>Total líquido</span><strong>≈ R$ 1.819/ano</strong></div>
+        </div>
+        <div class="div-card">
+          <div class="dn">ENER3 — yield 9,2%</div>
+          <div class="div-row"><span>Dividendos anuais (isento)</span><strong>≈ R$ 990/ano</strong></div>
+          <div class="div-row"><span>JCP c/ retenção 15%</span><strong>≈ R$ 0 (não paga JCP)</strong></div>
+          <div class="div-row"><span>Total líquido</span><strong>≈ R$ 990/ano</strong></div>
+        </div>
+        <div class="div-card">
+          <div class="dn">MINE3 — yield 6,8%</div>
+          <div class="div-row"><span>Dividendos anuais (isento)</span><strong>≈ R$ 392/ano</strong></div>
+          <div class="div-row"><span>JCP c/ retenção 15%</span><strong>≈ R$ 0</strong></div>
+          <div class="div-row"><span>Total líquido</span><strong>≈ R$ 392/ano</strong></div>
+        </div>
+        <div class="div-card">
+          <div class="dn">Resumo BR Ações</div>
+          <div class="div-row"><span>Dividendos isentos</span><strong>R$ 2.891/ano</strong></div>
+          <div class="div-row"><span>JCP líquido (−15% fonte)</span><strong>R$ 310/ano</strong></div>
+          <div class="div-row"><span>Total líquido</span><strong style="color:var(--good)">≈ R$ 3.201/ano</strong></div>
+        </div>
+      </div>
+    </section>
+  </div><!-- /br-ac -->
+
+  <!-- Sub: FIIs -->
+  <div class="sub-panel" id="tab-br-fi">
+    <section>
+      <div class="sh">FIIs Brasil — R$ 4.000 · 1,4% da carteira</div>
+      <p class="lede">Rendimentos de FIIs são isentos de IR para PF em fundos com mais de 50 cotistas e cotas negociadas em bolsa (art. 3°, Lei 11.033/2004). Ganho de capital na venda das cotas é tributado a 20% (não há isenção de R$20k para FIIs).</p>
+      <div class="tbl-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Ticker</th><th>Qtd</th><th class="r">PM</th><th class="r">Cotação</th><th class="r">Var. s/ PM</th><th class="r">Valor</th><th class="r">Ganho Não Real.</th><th class="r">Yield</th><th class="r">Renda/mês</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>URBA11</strong></td>
+              <td class="num">50</td>
+              <td class="r num">R$ 68,00</td>
+              <td class="r num">R$ 80,00</td>
+              <td class="r num pos">+17,6%</td>
+              <td class="r num">R$ 4.000</td>
+              <td class="r num pos">+R$ 600</td>
+              <td class="r num">8,5% a.a.</td>
+              <td class="r num pos">≈ R$ 28,33</td>
+            </tr>
+          </tbody>
+          <tfoot>
+            <tr>
+              <td colspan="5"><strong>Total FIIs BR</strong></td>
+              <td class="r num">R$ 4.000</td>
+              <td class="r num pos">+R$ 600</td>
+              <td class="r num">8,5%</td>
+              <td class="r num">≈ R$ 28/mês</td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+    </section>
+    <section>
+      <div class="sh">Dividendos — FIIs</div>
+      <div class="div-grid">
+        <div class="div-card">
+          <div class="dn">URBA11 — yield 8,5%</div>
+          <div class="div-row"><span>Rend. mensal (isento PF)</span><strong>≈ R$ 28,33/mês</strong></div>
+          <div class="div-row"><span>Renda anual projetada</span><strong>≈ R$ 340/ano</strong></div>
+          <div class="div-row"><span>GCAP na venda de cotas</span><strong style="color:var(--warn)">20% s/ ganho</strong></div>
+        </div>
+        <div class="div-card" style="background:var(--warn-bg);border-color:color-mix(in srgb,var(--warn) 25%,transparent)">
+          <div class="dn" style="color:var(--warn)">⚠ Posição muito abaixo da meta</div>
+          <div class="div-row"><span>Atual</span><strong>1,4% da carteira</strong></div>
+          <div class="div-row"><span>Meta mínima</span><strong>3,0% (R$ 8.400)</strong></div>
+          <div class="div-row"><span>Aporte sugerido</span><strong>≈ R$ 4.400 em URBA11</strong></div>
+        </div>
+      </div>
+    </section>
+  </div><!-- /br-fi -->
+
+</div><!-- /tab-brasil -->
+
+
+<!-- ════════════════════════════════════════════
+     TAB: EUA
+════════════════════════════════════════════ -->
+<div class="tab-panel" id="tab-eua">
+
+  <nav class="tabs-sub" id="nav-us">
+    <button class="active" data-subtab="us-ac">Ações</button>
+    <button data-subtab="us-etf">ETFs</button>
+  </nav>
+
+  <!-- Sub: Ações EUA -->
+  <div class="sub-panel active" id="tab-us-ac">
+    <section>
+      <div class="sh">Ações EUA — US$ 16.040 ≈ R$ 83.248 · 29,7% da carteira</div>
+      <p class="lede">Para NRA (non-resident alien — investidor brasileiro): ganhos de capital na venda de ações listadas em bolsa americana são <strong>isentos de imposto nos EUA</strong>. O investidor deve declarar e recolher GCAP no Brasil (15% sobre o ganho convertido em R$ na data da operação, conforme Lei 14.754/2023). Dividendos sofrem withholding de 30%.</p>
+      <div class="tbl-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Ticker</th><th>Qtd</th><th class="r">PM (US$)</th><th class="r">Cotação</th><th class="r">Var. s/ PM</th><th class="r">Valor (US$)</th><th class="r">Valor (R$)</th><th class="r">G/P Não Real.</th><th class="r">GCAP estimado</th><th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>BIG-CO</strong><br><span style="font-size:11px;color:var(--ink-muted)">↳ manter</span></td>
+              <td class="num">15</td>
+              <td class="r num">US$ 320</td>
+              <td class="r num">US$ 410</td>
+              <td class="r num pos">+28,1%</td>
+              <td class="r num">US$ 6.150</td>
+              <td class="r num">R$ 31.919</td>
+              <td class="r num pos">+US$ 1.350</td>
+              <td class="r">—</td>
+              <td><span class="chip ab">▲ Abaixo alvo</span></td>
+            </tr>
+            <tr style="background:color-mix(in srgb,var(--warn) 5%,transparent)">
+              <td><strong>ACME3</strong><br><span style="font-size:11px;color:var(--warn)">↳ candidato a venda</span></td>
+              <td class="num">40</td>
+              <td class="r num">US$ 80</td>
+              <td class="r num">US$ 95</td>
+              <td class="r num pos">+18,8%</td>
+              <td class="r num">US$ 3.800</td>
+              <td class="r num">R$ 19.722</td>
+              <td class="r num pos">+US$ 600</td>
+              <td class="r num" style="color:var(--warn)">R$ 467 bruto</td>
+              <td><span class="chip ov">▼ Acima alvo</span></td>
+            </tr>
+            <tr style="background:color-mix(in srgb,var(--warn) 5%,transparent)">
+              <td><strong>TECH4</strong><br><span style="font-size:11px;color:var(--warn)">↳ candidato a venda</span></td>
+              <td class="num">30</td>
+              <td class="r num">US$ 140</td>
+              <td class="r num">US$ 143</td>
+              <td class="r num pos">+2,1%</td>
+              <td class="r num">US$ 4.290</td>
+              <td class="r num">R$ 22.265</td>
+              <td class="r num pos">+US$ 90</td>
+              <td class="r num" style="color:var(--warn)">R$ 70</td>
+              <td><span class="chip ab">▲ Abaixo alvo</span></td>
+            </tr>
+            <tr style="background:color-mix(in srgb,var(--good) 5%,transparent)">
+              <td><strong>SLOW-CO</strong><br><span style="font-size:11px;color:var(--good)">↳ vender para realizar perda</span></td>
+              <td class="num">25</td>
+              <td class="r num">US$ 95</td>
+              <td class="r num">US$ 72</td>
+              <td class="r num neg">−24,2%</td>
+              <td class="r num">US$ 1.800</td>
+              <td class="r num">R$ 9.342</td>
+              <td class="r num neg">−US$ 575</td>
+              <td class="r num pos">−R$ 448 (compensa)</td>
+              <td><span class="chip ov">▼ Acima alvo</span></td>
+            </tr>
+          </tbody>
+          <tfoot>
+            <tr>
+              <td colspan="6"><strong>Total Ações EUA</strong></td>
+              <td class="r num">R$ 83.248</td>
+              <td class="r num pos">+US$ 1.465 líq.</td>
+              <td class="r num" style="color:var(--good)">R$ 89 otimizado</td>
+              <td></td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+      <div class="lede" style="margin-top:12px;font-size:12px">
+        <strong>GCAP bruto</strong> (sem compensação): R$537 · <strong>GCAP líquido</strong> (compensando SLOW-CO): <strong>R$89</strong> · Economia: <strong style="color:var(--good)">R$448</strong> pela realização da perda de SLOW-CO.
+      </div>
+    </section>
+  </div><!-- /us-ac -->
+
+  <!-- Sub: ETFs EUA -->
+  <div class="sub-panel" id="tab-us-etf">
+    <section>
+      <div class="sh">ETFs EUA — US$ 5.540 ≈ R$ 28.752 · 10,3% da carteira</div>
+      <p class="lede">ETFs de renda (covered call, dividend yield) distribuem mensalmente. Dividendos e distribuições sofrem <strong>withholding de 30%</strong> para NRA — sempre mostre renda bruta e líquida separadamente. Ganho de capital na venda dos ETFs: isento nos EUA para NRA, tributado no Brasil a 15% sobre o ganho em R$ na data da venda.</p>
+      <div class="tbl-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Ticker</th><th>Qtd</th><th class="r">PM (US$)</th><th class="r">Cotação</th><th class="r">Var. s/ PM</th><th class="r">Valor (US$)</th><th class="r">Valor (R$)</th><th class="r">G/P Não Real.</th><th class="r">Yield</th><th class="r">Renda Bruta/ano</th><th class="r">Withholding 30%</th><th class="r">Renda Líq./ano</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>ETF-YIELD</strong><br><span style="font-size:11px;color:var(--ink-muted)">covered call</span></td>
+              <td class="num">90</td>
+              <td class="r num">US$ 45</td>
+              <td class="r num">US$ 46,50</td>
+              <td class="r num pos">+3,3%</td>
+              <td class="r num">US$ 4.185</td>
+              <td class="r num">R$ 21.720</td>
+              <td class="r num pos">+US$ 135</td>
+              <td class="r num">~10,2%</td>
+              <td class="r num">US$ 427/ano</td>
+              <td class="r num neg">−US$ 128</td>
+              <td class="r num pos">US$ 299 ≈ R$1.552</td>
+            </tr>
+            <tr>
+              <td><strong>SP500-ETF</strong><br><span style="font-size:11px;color:var(--ink-muted)">índice amplo</span></td>
+              <td class="num">2</td>
+              <td class="r num">US$ 470</td>
+              <td class="r num">US$ 510</td>
+              <td class="r num pos">+8,5%</td>
+              <td class="r num">US$ 1.020</td>
+              <td class="r num">R$ 5.294</td>
+              <td class="r num pos">+US$ 80</td>
+              <td class="r num">~1,3%</td>
+              <td class="r num">US$ 13/ano</td>
+              <td class="r num neg">−US$ 4</td>
+              <td class="r num pos">US$ 9 ≈ R$47</td>
+            </tr>
+            <tr>
+              <td><strong>REND-ETF</strong><br><span style="font-size:11px;color:var(--ink-muted)">dividend select</span></td>
+              <td class="num">9</td>
+              <td class="r num">US$ 37,00</td>
+              <td class="r num">US$ 37,80</td>
+              <td class="r num pos">+2,2%</td>
+              <td class="r num">US$ 340</td>
+              <td class="r num">R$ 1.765</td>
+              <td class="r num pos">+US$ 7</td>
+              <td class="r num">~8,1%</td>
+              <td class="r num">US$ 28/ano</td>
+              <td class="r num neg">−US$ 8</td>
+              <td class="r num pos">US$ 20 ≈ R$104</td>
+            </tr>
+          </tbody>
+          <tfoot>
+            <tr>
+              <td colspan="6"><strong>Total ETFs EUA</strong></td>
+              <td class="r num">R$ 28.779</td>
+              <td class="r num pos">+US$ 222</td>
+              <td class="r"></td>
+              <td class="r num">US$ 468/ano</td>
+              <td class="r num neg">−US$ 140</td>
+              <td class="r num pos">US$ 328 ≈ R$ 1.703</td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+    </section>
+    <section>
+      <div class="sh">Resumo de Renda EUA (Dividendos + Distribuições)</div>
+      <div class="div-grid">
+        <div class="div-card">
+          <div class="dn">Ações EUA (BIG-CO)</div>
+          <div class="div-row"><span>Dividendo bruto/ano</span><strong>≈ US$ 82</strong></div>
+          <div class="div-row"><span>Withholding 30%</span><strong style="color:var(--crit)">−US$ 25</strong></div>
+          <div class="div-row"><span>Líquido/ano</span><strong>≈ US$ 57 ≈ R$ 296</strong></div>
+        </div>
+        <div class="div-card">
+          <div class="dn">ETFs EUA (combinado)</div>
+          <div class="div-row"><span>Distribuição bruta/ano</span><strong>≈ US$ 468</strong></div>
+          <div class="div-row"><span>Withholding 30%</span><strong style="color:var(--crit)">−US$ 140</strong></div>
+          <div class="div-row"><span>Líquido/ano</span><strong>≈ US$ 328 ≈ R$ 1.703</strong></div>
+        </div>
+        <div class="div-card">
+          <div class="dn">Total EUA</div>
+          <div class="div-row"><span>Renda bruta/ano</span><strong>US$ 550</strong></div>
+          <div class="div-row"><span>Withholding 30%</span><strong style="color:var(--crit)">−US$ 165</strong></div>
+          <div class="div-row"><span>Líquido/ano</span><strong style="color:var(--good)">US$ 385 ≈ R$ 1.999</strong></div>
+        </div>
+      </div>
+    </section>
+  </div><!-- /us-etf -->
+
+</div><!-- /tab-eua -->
+
+
+<!-- ════════════════════════════════════════════
+     TAB: Rebalanceamento
+════════════════════════════════════════════ -->
+<div class="tab-panel" id="tab-rebal">
+
+  <section>
+    <div class="sh">O Problema</div>
+    <p class="lede">Renda Fixa BR (+17,5 p.p.) e Ações EUA (+10,0 p.p.) estão acima da faixa. Ações BR (−9,1 p.p.) e FIIs BR (−4,1 p.p.) estão abaixo. O objetivo é reduzir EUA + RF BR e aumentar RV BR — com o menor custo tributário possível.</p>
+  </section>
+
+  <!-- Mapa de GCAP -->
+  <section>
+    <div class="sh">Mapa de Ganhos e Perdas Não Realizados</div>
+    <div class="tbl-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Ativo</th><th>Mercado</th><th class="r">Ganho / Perda</th><th class="r">GCAP Bruto Potencial</th><th>Compensável?</th><th>Decisão</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr style="background:var(--surface-2)"><td colspan="6" style="font-size:11px;font-weight:700;color:var(--ink-muted);padding:5px 13px">🇧🇷 Brasil — Ações</td></tr>
+          <tr>
+            <td><strong>BANK4</strong></td>
+            <td style="color:var(--ink-muted)">Ações BR</td>
+            <td class="r num pos">+R$ 1.750</td>
+            <td class="r num">R$ 0 <span style="font-size:11px;color:var(--good)">(isenção R$20k)</span></td>
+            <td><span class="chip is">Isento se &lt; R$20k/mês</span></td>
+            <td style="color:var(--ink-2)">Manter</td>
+          </tr>
+          <tr>
+            <td><strong>ENER3</strong></td>
+            <td style="color:var(--ink-muted)">Ações BR</td>
+            <td class="r num neg">−R$ 650</td>
+            <td class="r num">R$ 0</td>
+            <td><span class="chip na">Perda — BR só compensa BR</span></td>
+            <td style="color:var(--ink-2)">Manter</td>
+          </tr>
+          <tr>
+            <td><strong>MINE3</strong></td>
+            <td style="color:var(--ink-muted)">Ações BR</td>
+            <td class="r num neg">−R$ 852</td>
+            <td class="r num">R$ 0</td>
+            <td><span class="chip na">Perda — BR só compensa BR</span></td>
+            <td style="color:var(--ink-2)">Manter</td>
+          </tr>
+          <tr style="background:color-mix(in srgb,var(--good) 5%,transparent)">
+            <td><strong>TRAD5</strong></td>
+            <td style="color:var(--ink-muted)">Ações BR</td>
+            <td class="r num pos">+R$ 390</td>
+            <td class="r num pos">R$ 0 <span style="font-size:11px">(isento)</span></td>
+            <td><span class="chip is">Venda R$1.740 &lt; R$20k/mês</span></td>
+            <td style="color:var(--good);font-weight:600">✓ Vender</td>
+          </tr>
+          <tr style="background:var(--surface-2)"><td colspan="6" style="font-size:11px;font-weight:700;color:var(--ink-muted);padding:5px 13px">🇺🇸 EUA — Ações</td></tr>
+          <tr>
+            <td><strong>BIG-CO</strong></td>
+            <td style="color:var(--ink-muted)">Ações EUA</td>
+            <td class="r num pos">+US$ 1.350</td>
+            <td class="r num" style="color:var(--crit)">R$ 1.053 bruto</td>
+            <td><span class="chip na">Sem perda disponível para compensar</span></td>
+            <td style="color:var(--ink-2)">Manter (alto GCAP)</td>
+          </tr>
+          <tr style="background:color-mix(in srgb,var(--good) 5%,transparent)">
+            <td><strong>SLOW-CO</strong></td>
+            <td style="color:var(--ink-muted)">Ações EUA</td>
+            <td class="r num neg">−US$ 575</td>
+            <td class="r num pos">−R$ 448 (compensa)</td>
+            <td><span class="chip ab">Perda compensa ganhos EUA</span></td>
+            <td style="color:var(--good);font-weight:600">✓ Vender (realizar perda)</td>
+          </tr>
+          <tr style="background:color-mix(in srgb,var(--warn) 5%,transparent)">
+            <td><strong>ACME3</strong></td>
+            <td style="color:var(--ink-muted)">Ações EUA</td>
+            <td class="r num pos">+US$ 600</td>
+            <td class="r num" style="color:var(--warn)">R$ 467 bruto → R$ 19 líq.</td>
+            <td><span class="chip ab">Compensado por SLOW-CO</span></td>
+            <td style="color:var(--warn);font-weight:600">✓ Vender (após SLOW-CO)</td>
+          </tr>
+          <tr style="background:color-mix(in srgb,var(--warn) 5%,transparent)">
+            <td><strong>TECH4</strong></td>
+            <td style="color:var(--ink-muted)">Ações EUA</td>
+            <td class="r num pos">+US$ 90</td>
+            <td class="r num" style="color:var(--warn)">R$ 70</td>
+            <td><span class="chip na">Perda de SLOW-CO já usada</span></td>
+            <td style="color:var(--warn);font-weight:600">✓ Vender (GCAP residual)</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- Simulação GCAP -->
+  <section>
+    <div class="sh">Simulação: Com vs. Sem Compensação de Perdas</div>
+    <div class="gcap-intro">
+      <h3>Como funciona a compensação no exterior</h3>
+      <p>Perdas realizadas na venda de ativos no exterior (mercado EUA) compensam ganhos também no exterior, reduzindo a base de cálculo do GCAP. As perdas de ENER3 e MINE3 (mercado BR) <strong>não compensam</strong> ganhos em EUA — os mercados são segregados. Ao vender SLOW-CO com perda de US$575, esse valor abate os ganhos de ACME3 (US$600), deixando apenas US$25 de ganho líquido tributável em vez de US$600.</p>
+      <div class="compare-box">
+        <div class="cmp sem">
+          <div class="cl">Sem compensação</div>
+          <div class="cv num">R$ 537</div>
+          <div class="cf">GCAP de ACME3 + TECH4 · SLOW-CO mantida com perda latente</div>
+        </div>
+        <div class="cmp com">
+          <div class="cl">Com compensação (proposta)</div>
+          <div class="cv num">R$ 89</div>
+          <div class="cf">Vende SLOW-CO primeiro, abate US$575 do ganho de ACME3</div>
+        </div>
+      </div>
+      <div class="econ">💰 Economia tributária pela realização de perda: <strong>R$ 448</strong></div>
+    </div>
+  </section>
+
+  <!-- Passos de execução -->
+  <section>
+    <div class="sh">Plano de Execução — Do Menor ao Maior Custo</div>
+    <div class="steps">
+
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <div class="step-line"></div>
+          <h4>Aporte novo → BANK4 e URBA11 (zero GCAP)</h4>
+          <p>Direcionar R$15.000 de novos aportes para BANK4 (ações BR, yield 8,5%) e R$4.400 para URBA11 (FII, yield 8,5%). Custo tributário zero — não aciona nenhuma venda. Reduz o drift de Ações BR de −9,1 p.p. e de FIIs de −4,1 p.p. sem qualquer imposto.</p>
+          <div class="step-tax">
+            <div><span class="sk">Capital empregado</span><span class="sv num">R$ 19.400</span></div>
+            <div><span class="sk">GCAP</span><span class="sv num" style="color:var(--good)">R$ 0</span></div>
+            <div><span class="sk">Renda adicional/ano</span><span class="sv num pos">+≈ R$ 1.650</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <div class="step-line"></div>
+          <h4>Vender SLOW-CO (EUA) → realizar perda para compensar</h4>
+          <p>Vender as 25 ações de SLOW-CO por US$72 (total US$1.800 ≈ R$9.342). A perda realizada de US$575 será usada no passo seguinte para abater o ganho de ACME3. Renda perdida: zero (SLOW-CO não paga dividendo). Esta é a ordem correta — sempre realizar a perda <em>antes</em> da venda com ganho.</p>
+          <div class="step-tax">
+            <div><span class="sk">Valor liberado</span><span class="sv num">US$ 1.800 ≈ R$ 9.342</span></div>
+            <div><span class="sk">Perda realizada</span><span class="sv num pos">−US$ 575 (compensável)</span></div>
+            <div><span class="sk">GCAP este passo</span><span class="sv num" style="color:var(--good)">R$ 0</span></div>
+            <div><span class="sk">Renda perdida/ano</span><span class="sv num" style="color:var(--good)">US$ 0</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <div class="step-line"></div>
+          <h4>Vender ACME3 (EUA) → ganho compensado por SLOW-CO</h4>
+          <p>Vender 40 ações de ACME3 por US$95 (total US$3.800 ≈ R$19.722). Ganho bruto US$600. Após compensar a perda de SLOW-CO (US$575): ganho líquido = US$25. GCAP = 15% × (US$25 × R$5,19) = <strong>R$19</strong>. ACME3 não paga dividendo — renda perdida nula.</p>
+          <div class="step-tax">
+            <div><span class="sk">Valor liberado</span><span class="sv num">US$ 3.800 ≈ R$ 19.722</span></div>
+            <div><span class="sk">Ganho bruto</span><span class="sv num">+US$ 600</span></div>
+            <div><span class="sk">Compensação SLOW-CO</span><span class="sv num pos">−US$ 575</span></div>
+            <div><span class="sk">Ganho líquido tributável</span><span class="sv num">US$ 25 = R$ 130</span></div>
+            <div><span class="sk">GCAP (15%)</span><span class="sv num" style="color:var(--warn)">R$ 19</span></div>
+            <div><span class="sk">Renda perdida/ano</span><span class="sv num" style="color:var(--good)">US$ 0</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-body">
+          <div class="step-line"></div>
+          <h4>Vender TECH4 (EUA) → ganho pequeno, GCAP residual</h4>
+          <p>Vender 30 ações de TECH4 por US$143 (total US$4.290 ≈ R$22.265). Ganho de apenas US$90 (PM US$140 vs. cotação US$143). GCAP = 15% × (US$90 × R$5,19) = <strong>R$70</strong>. TECH4 não paga dividendo. Capital liberado direcionar para BANK4 ou ENER3 via aporte na Corretora A.</p>
+          <div class="step-tax">
+            <div><span class="sk">Valor liberado</span><span class="sv num">US$ 4.290 ≈ R$ 22.265</span></div>
+            <div><span class="sk">Ganho tributável</span><span class="sv num">US$ 90 = R$ 467</span></div>
+            <div><span class="sk">GCAP (15%)</span><span class="sv num" style="color:var(--warn)">R$ 70</span></div>
+            <div><span class="sk">Renda perdida/ano</span><span class="sv num" style="color:var(--good)">US$ 0</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">5</div>
+        <div class="step-body">
+          <h4>Vender TRAD5 (BR) → isento de GCAP</h4>
+          <p>Vender 100 ações de TRAD5 por R$17,40 (total R$1.740). Ganho de R$390. Como as vendas de ações BR no mês ficam abaixo de R$20.000, o ganho é <strong>isento de IR</strong> (art. 22, Lei 11.033/2004). Capital reinvestir em ENER3 ou MINE3 para aumentar yield e compensar as perdas latentes desses ativos.</p>
+          <div class="step-tax">
+            <div><span class="sk">Valor liberado</span><span class="sv num">R$ 1.740</span></div>
+            <div><span class="sk">Ganho realizado</span><span class="sv num pos">+R$ 390</span></div>
+            <div><span class="sk">GCAP</span><span class="sv num" style="color:var(--good)">R$ 0 (isento — &lt; R$20k/mês)</span></div>
+            <div><span class="sk">Renda perdida/ano</span><span class="sv num" style="color:var(--warn)">−≈ R$ 21 (yield 1,2%)</span></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Resumo final -->
+  <section>
+    <div class="sh">Resumo Tributário da Proposta</div>
+    <div class="tbl-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Operação</th><th>Ativo</th><th class="r">Valor Bruto</th><th class="r">Ganho / Perda</th><th class="r">GCAP Bruto</th><th class="r">Compensação</th><th class="r">GCAP Líquido</th><th class="r">Renda Perdida/ano</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Venda</td><td><strong>SLOW-CO</strong> (EUA)</td>
+            <td class="r num">US$ 1.800 ≈ R$ 9.342</td>
+            <td class="r num neg">−US$ 575</td>
+            <td class="r num pos">R$ 0</td>
+            <td class="r num pos">−R$ 448 (carrier)</td>
+            <td class="r num pos">R$ 0</td>
+            <td class="r num">US$ 0</td>
+          </tr>
+          <tr>
+            <td>Venda</td><td><strong>ACME3</strong> (EUA)</td>
+            <td class="r num">US$ 3.800 ≈ R$ 19.722</td>
+            <td class="r num pos">+US$ 600</td>
+            <td class="r num" style="color:var(--warn)">R$ 467</td>
+            <td class="r num pos">−R$ 448 (SLOW-CO)</td>
+            <td class="r num" style="color:var(--good)">R$ 19</td>
+            <td class="r num">US$ 0</td>
+          </tr>
+          <tr>
+            <td>Venda</td><td><strong>TECH4</strong> (EUA)</td>
+            <td class="r num">US$ 4.290 ≈ R$ 22.265</td>
+            <td class="r num pos">+US$ 90</td>
+            <td class="r num" style="color:var(--warn)">R$ 70</td>
+            <td class="r">—</td>
+            <td class="r num" style="color:var(--warn)">R$ 70</td>
+            <td class="r num">US$ 0</td>
+          </tr>
+          <tr>
+            <td>Venda</td><td><strong>TRAD5</strong> (BR)</td>
+            <td class="r num">R$ 1.740</td>
+            <td class="r num pos">+R$ 390</td>
+            <td class="r num pos">R$ 0 (isento)</td>
+            <td class="r">Isenção R$20k/mês</td>
+            <td class="r num pos">R$ 0</td>
+            <td class="r num" style="color:var(--warn)">≈ R$ 21</td>
+          </tr>
+          <tr>
+            <td>Compra</td><td><strong>BANK4 + URBA11</strong> (BR)</td>
+            <td class="r num">R$ 19.400 (novo aporte)</td>
+            <td class="r">—</td>
+            <td class="r num pos">R$ 0</td>
+            <td class="r">—</td>
+            <td class="r num pos">R$ 0</td>
+            <td class="r num pos">+≈ R$ 1.650</td>
+          </tr>
+        </tbody>
+        <tfoot>
+          <tr>
+            <td colspan="6"><strong>TOTAL GCAP da proposta</strong></td>
+            <td class="r num" style="color:var(--good);font-size:15px"><strong>R$ 89</strong></td>
+            <td class="r num pos"><strong>+≈ R$ 1.629 líq./ano</strong></td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+    <div class="alerts" style="margin-top:14px">
+      <div class="alert i">
+        <span class="chip-badge">Importante</span>
+        <p>O GCAP de EUA (R$89) deve ser recolhido via <strong>DARF</strong> até o último dia útil do mês seguinte à operação. Código 0941 (ganho de capital no exterior). Conversão do ganho em USD para BRL pela <strong>taxa PTAX de venda</strong> no dia da operação, não na data de liquidação.</p>
+      </div>
+      <div class="alert i">
+        <span class="chip-badge">Calendário</span>
+        <p>Execute os passos 2 e 3 <strong>no mesmo mês</strong> para que a compensação de perda de SLOW-CO valha para o ganho de ACME3. Perdas no exterior não podem ser usadas em meses diferentes sem situação de arrastar o saldo negativo (mantenha planilha de controle).</p>
+      </div>
+    </div>
+  </section>
+
+</div><!-- /tab-rebal -->
+
+</div><!-- /wrap -->
+
+<footer>
+  <div class="inner">
+    <p><strong>Isto não é consultoria de investimentos licenciada.</strong> Todos os dados desta página são <strong>ficcionais</strong>, criados apenas para demonstrar o Investment Portfolio Analyzer (IPA). Não tome decisões financeiras com base nesta página.</p>
+    <p><strong>Confirme com um contador/CPA</strong> antes de qualquer operação real — especialmente tributação cross-border Brasil–EUA (Lei 14.754/2023, regulamentações IN RFB). Regras tributárias mudam com frequência. Fotografia hipotética de 15/08/2026 · Selic 14,00% a.a.</p>
+  </div>
+</footer>
+
+<script>
+(function(){
+  // Main tabs
+  const mainNav = document.getElementById('nav-main');
+  mainNav.querySelectorAll('button').forEach(btn => {
+    btn.addEventListener('click', () => {
+      mainNav.querySelectorAll('button').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+      document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
+    });
+  });
+
+  // Sub tabs
+  function initSubNav(navId, prefix) {
+    const nav = document.getElementById(navId);
+    if (!nav) return;
+    nav.querySelectorAll('button').forEach(btn => {
+      btn.addEventListener('click', () => {
+        nav.querySelectorAll('button').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        document.querySelectorAll('#tab-' + prefix + ' .sub-panel').forEach(p => p.classList.remove('active'));
+        document.getElementById('tab-' + btn.dataset.subtab).classList.add('active');
+      });
+    });
+  }
+  initSubNav('nav-br', 'brasil');
+  initSubNav('nav-us', 'eua');
+})();
+</script>

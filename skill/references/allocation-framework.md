@@ -12,7 +12,7 @@ O usuário definiu como meta bater a Selic mensal com cautela em relação a con
 |---|---|---|
 | Renda fixa/caixa Brasil (Tesouro Selic, CDB liquidez, etc.) | 20-35% (piso ~20%) | Reserva de segurança e liquidez; piso evita ficar 100% exposto a risco de mercado |
 | Renda variável Brasil (ações + FIIs) | 20-35% | Exposição a crescimento doméstico e renda de FIIs, sem dominar a carteira |
-| Exposição EUA via Avenue (ações + ETFs) | 20-30% | Diversificação geográfica e cambial; teto evita concentração em um único mercado estrangeiro |
+| Exposição EUA via corretora americana (ações + ETFs) | 20-30% | Diversificação geográfica e cambial; teto evita concentração em um único mercado estrangeiro |
 | Outras exposições internacionais/alternativos (se houver) | 0-15% | Espaço para diversificação adicional sem virar o núcleo da carteira |
 
 Os números não precisam somar rigidamente a 100% em compartimentos estanques — o importante são os **tetos de concentração**, que valem independente da divisão exata acima:
@@ -24,7 +24,7 @@ Os números não precisam somar rigidamente a 100% em compartimentos estanques �
 
 ## Caixa parado em moeda estrangeira
 
-Dinheiro em USD parado na Avenue (não investido em nenhum ativo) conta para os **tetos de país e de moeda** acima — é exposição cambial e a um único mercado tanto quanto uma ação americana seria — mas não deve ser somado ao bucket "ações + ETFs EUA" da tabela de faixas, já que não carrega o mesmo risco de mercado (só risco cambial). Trate-o como uma linha própria dentro da categoria "Exposição EUA" ao montar o dashboard, para que o usuário veja quanto do teto de país/moeda vem de posições de fato investidas vs. caixa ocioso — essa distinção também sinaliza uma oportunidade óbvia (caixa parado não precisa de venda nem gera imposto para ser realocado).
+Dinheiro em USD parado na corretora americana (não investido em nenhum ativo) conta para os **tetos de país e de moeda** acima — é exposição cambial e a um único mercado tanto quanto uma ação americana seria — mas não deve ser somado ao bucket "ações + ETFs EUA" da tabela de faixas, já que não carrega o mesmo risco de mercado (só risco cambial). Trate-o como uma linha própria dentro da categoria "Exposição EUA" ao montar o dashboard, para que o usuário veja quanto do teto de país/moeda vem de posições de fato investidas vs. caixa ocioso — essa distinção também sinaliza uma oportunidade óbvia (caixa parado não precisa de venda nem gera imposto para ser realocado).
 
 ## Quando sugerir ação
 

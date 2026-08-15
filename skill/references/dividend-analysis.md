@@ -1,6 +1,6 @@
 # Dividendos e renda projetada — metodologia
 
-O usuário tratou isso como um fator de decisão de primeira ordem, não um extra — trate como tal em toda análise desta skill, tanto para posições brasileiras (Ion) quanto americanas (Avenue).
+O usuário tratou isso como um fator de decisão de primeira ordem, não um extra — trate como tal em toda análise desta skill, tanto para posições brasileiras quanto americanas.
 
 ## Como levantar o histórico
 

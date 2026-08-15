@@ -2,10 +2,10 @@
 set -euo pipefail
 
 REPO="$(cd "$(dirname "$0")" && pwd)"
-SKILL_SRC="$HOME/.claude/skills/investment-advisor"
+SKILL_SRC="$HOME/.claude/skills/investment-portfolio-analyzer"
 MSG="${1:-"sync: $(date '+%Y-%m-%d %H:%M')"}"
 
-echo "Syncing skill files from $SKILL_SRC..."
+echo "Syncing IPA skill files from $SKILL_SRC..."
 if [[ -d "$SKILL_SRC" ]]; then
   cp "$SKILL_SRC/SKILL.md" "$REPO/skill/SKILL.md"
   cp "$SKILL_SRC/references/"*.md "$REPO/skill/references/"

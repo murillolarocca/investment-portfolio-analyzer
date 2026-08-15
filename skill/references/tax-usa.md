@@ -1,6 +1,6 @@
-# Tributação nos EUA — referência para posições na Avenue
+# Tributação nos EUA — referência para posições na corretora americana
 
-A Avenue dá acesso ao mercado americano para o investidor brasileiro operando como **non-resident alien (NRA)** perante o IRS (via formulário **W-8BEN**, normalmente preenchido na abertura da conta). As regras de tributação americana para um NRA são bem diferentes das de um residente fiscal dos EUA — não confunda as duas ao pesquisar ou explicar algo para o usuário.
+A corretora americana dá acesso ao mercado americano para o investidor brasileiro operando como **non-resident alien (NRA)** perante o IRS (via formulário **W-8BEN**, normalmente preenchido na abertura da conta). As regras de tributação americana para um NRA são bem diferentes das de um residente fiscal dos EUA — não confunda as duas ao pesquisar ou explicar algo para o usuário.
 
 Trate os pontos abaixo como estrutura geral, não como aconselhamento tributário definitivo — leis e tratados podem mudar, e a situação específica do usuário (tipo de ativo, se é REIT, se é ETF vs. ação individual) pode alterar o resultado. Recomende confirmação com um CPA/tax advisor americano para qualquer operação de valor relevante.
 
@@ -19,9 +19,9 @@ Trate os pontos abaixo como estrutura geral, não como aconselhamento tributári
 
 ## W-8BEN
 
-- É o formulário que certifica status de NRA para fins de retenção correta nos EUA; normalmente é preenchido uma vez na abertura da conta Avenue e precisa ser renovado periodicamente (validade de cerca de 3 anos). Se o usuário perguntar sobre um dividendo com retenção muito diferente de 30%, o primeiro ponto a checar é se o W-8BEN está válido/atualizado na Avenue — mas isso é uma checagem operacional do usuário com a corretora, não algo que esta skill possa verificar.
+- É o formulário que certifica status de NRA para fins de retenção correta nos EUA; normalmente é preenchido uma vez na abertura da conta corretora americana e precisa ser renovado periodicamente (validade de cerca de 3 anos). Se o usuário perguntar sobre um dividendo com retenção muito diferente de 30%, o primeiro ponto a checar é se o W-8BEN está válido/atualizado na corretora americana — mas isso é uma checagem operacional do usuário com a corretora, não algo que esta skill possa verificar.
 
 ## Regra prática para as sugestões desta skill
 
-- Ao propor vender uma posição da Avenue, normalmente **não há imposto americano a subtrair** do valor bruto (fora a exceção de REIT/FIRPTA) — mas sempre lembre o usuário que o ganho ainda precisa ser apurado e declarado no Brasil, com imposto brasileiro correspondente (não é uma venda "livre de imposto", só livre de imposto **americano**).
+- Ao propor vender uma posição da corretora americana, normalmente **não há imposto americano a subtrair** do valor bruto (fora a exceção de REIT/FIRPTA) — mas sempre lembre o usuário que o ganho ainda precisa ser apurado e declarado no Brasil, com imposto brasileiro correspondente (não é uma venda "livre de imposto", só livre de imposto **americano**).
 - Ao calcular rendimento de dividendos em USD para comparar com a Selic mensal, sempre mostre o valor líquido (após os 30% de withholding) ao lado do bruto, para não superestimar o retorno da posição.

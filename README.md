@@ -1,27 +1,29 @@
-# 📊 Investment Portfolio Analyzer
+# Investment Portfolio Analyzer (IPA)
 
-> A Claude Code skill that turns your brokerage statements into a structured, tax-aware portfolio analysis — complete with allocation drift, analyst targets, rebalancing proposals, and a visual HTML dashboard.
+> A Claude Code skill that turns your brokerage statements into a structured, tax-aware portfolio analysis — complete with allocation drift, rebalancing proposals with GCAP minimization, analyst targets, dividend income projection, and an interactive HTML dashboard.
 
-Built for Brazilian investors holding positions at **Ion (Itaú)** and **Avenue**, with full coverage of cross-border taxation (Brazil/USA), Selic benchmark comparison, and dividend income projection.
+Built for investors holding positions across Brazilian and US brokers, with full coverage of cross-border taxation (Brazil/USA), Selic benchmark comparison, and per-trade tax cost calculation.
 
 ---
 
-## What it does
+## Core features
 
-You paste or attach your brokerage export. The skill does the rest:
+### Tax-minimizing rebalancing
+IPA calculates gains and losses per position and always proposes rebalances that **minimize GCAP (Ganho de Capital) and other taxes payable**. Every proposed trade shows gross value, estimated tax (IRPF, GCAP, US withholding where applicable), and net proceeds — so you always know the real cost before you act.
 
-| Step | Output |
-|------|--------|
-| Parses positions from Ion and/or Avenue | Ticker, quantity, average cost, current value |
-| Calculates allocation by class, country, and currency | % vs. your target allocation |
-| Measures drift vs. your target (default: moderate profile) | Which categories are over/under |
-| Benchmarks portfolio return against the monthly Selic | Are you beating the risk-free rate? |
-| Projects dividend income (BR + US, gross and net of withholding) | Annual R$ / US$ yield per position |
-| Proposes rebalancing with tax cost pre-calculated | Gross value, estimated tax, net received |
-| Flags analyst price targets per bank vs. current price | Upside/downside % per position |
-| Publishes an interactive HTML dashboard | One artifact link to share or save |
+Priority order the skill always follows:
+1. **Redirect new deposits** to underweight categories — zero tax
+2. **Use exemption limits** (e.g., R$20k/month isenção on Brazilian equities)
+3. **Realize losses** to offset gains where beneficial
+4. **Taxable sale** only when necessary — with full tax cost pre-calculated
 
-**This is not licensed financial advice.** See [Disclaimer](#disclaimer).
+### What it analyzes
+- Allocation by asset class, country, and currency vs. your target
+- Drift against a configurable target (default: moderate profile)
+- Portfolio return vs. Selic monthly benchmark
+- Dividend/income projection per position (gross and net of withholding)
+- Analyst price targets per bank vs. current price (GS, JPM, MS, UBS, BofA, XP)
+- Cross-border tax implications (GCAP, Lei 14.754/2023, US withholding for NRA)
 
 ---
 
@@ -31,12 +33,10 @@ You paste or attach your brokerage export. The skill does the rest:
 
 The dashboard includes:
 - Multi-tab layout: Overview, Brazilian stocks, US stocks, ETFs, Rebalancing proposals
-- Per-position cards with price vs. analyst targets (by bank: GS, JPM, MS, UBS, BofA)
+- Per-position cards with price vs. analyst targets (by bank)
 - Allocation chart with drift indicators
 - Tax-cost breakdown for every proposed trade
 - Fixed footer disclaimer
-
-![Dashboard preview](docs/dashboard-preview.png)
 
 ---
 
@@ -45,20 +45,17 @@ The dashboard includes:
 ### Prerequisites
 
 - [Claude Code](https://claude.ai/code) (any plan with skills support)
-- Brokerage statements from Ion (Itaú) and/or Avenue — PDF, CSV, screenshot, or pasted text
+- Brokerage statements from your Brazilian and/or US broker — PDF, CSV, screenshot, or pasted text
 
-### Install the skill
+### Install IPA
 
 ```bash
-# Clone the repo
 git clone https://github.com/murillolarocca/investment-portfolio-analyzer.git
 cd investment-portfolio-analyzer
-
-# Deploy the skill to your local Claude Code installation
 ./install.sh
 ```
 
-Then restart Claude Code (or run `/skills reload` if supported in your version).
+Then restart Claude Code.
 
 ### Run an analysis
 
@@ -69,12 +66,11 @@ Open Claude Code and say any of:
 - *"Revisar minha alocação"*
 - *"Dá uma olhada na minha carteira"*
 
-Claude will ask for your brokerage export and walk through the analysis automatically.
+IPA activates automatically when it detects investment-related keywords. No slash command needed.
 
 To update prices on an existing dashboard:
 
-- *"Revisar cotações"*
-- *"Atualizar preços dos papeis"*
+- *"Revisar cotações"* / *"Atualizar preços dos papeis"*
 
 ---
 
@@ -88,13 +84,13 @@ Quick summary:
 |-------|-----------|-------|
 | Ticker / asset name | Yes | |
 | Current market value | Yes | |
-| Average cost (PM) | Recommended | Needed for gain/loss % and tax calc |
-| Purchase date | Recommended | Affects tax bracket (BR sliding scale) |
+| Average cost (PM) | Recommended | Needed for gain/loss and tax calculation |
 | Gain % (as shown in app) | Optional | Used to back-calculate PM if missing |
+| Purchase date | Recommended | Affects tax bracket on BR fixed income |
 | Currency | Yes | BRL or USD |
-| Broker | Yes | Ion or Avenue |
+| Broker | Yes | Brazilian or US |
 
-Accepted formats: PDF export, CSV, screenshot/photo, or text pasted directly into chat.
+Accepted formats: PDF export, CSV, screenshot/photo, or pasted text.
 
 ---
 
@@ -102,14 +98,14 @@ Accepted formats: PDF export, CSV, screenshot/photo, or text pasted directly int
 
 See **[docs/output-guide.md](docs/output-guide.md)** for the full guide.
 
-The dashboard is published as a private HTML artifact. Key sections:
+Key dashboard sections:
 
-1. **Resumo (Overview)** — full position table with PM, current price, gain %, analyst target, upside %, and status chip
-2. **Ações BR** — Brazilian equities with Ion data
-3. **Ações EUA** — US equities with Avenue data
-4. **ETFs** — ETF positions with yield and coverage ratio data
-5. **Rebalanceamento** — Proposed trades with tax cost, net value, and reason
-6. **Dividendos** — Income projection table (gross and net of withholding)
+1. **Resumo** — full position table with PM, current price, gain %, analyst target, upside %, and status
+2. **Ações BR** — Brazilian equity cards
+3. **Ações EUA** — US equity cards
+4. **ETFs** — ETF positions with yield and coverage data
+5. **Rebalanceamento** — proposed trades with GCAP estimate, net proceeds, and reason
+6. **Dividendos** — income projection (gross and net of withholding)
 
 ---
 
@@ -117,7 +113,7 @@ The dashboard is published as a private HTML artifact. Key sections:
 
 | File | Purpose |
 |------|---------|
-| [skill/SKILL.md](skill/SKILL.md) | Main skill instructions for Claude |
+| [skill/SKILL.md](skill/SKILL.md) | Main IPA instructions for Claude |
 | [skill/references/allocation-framework.md](skill/references/allocation-framework.md) | Target allocation ranges (moderate profile) |
 | [skill/references/tax-brazil.md](skill/references/tax-brazil.md) | Brazilian tax rules (IRPF, GCAP, Lei 14.754/2023) |
 | [skill/references/tax-usa.md](skill/references/tax-usa.md) | US tax rules for NRA investors (withholding, W-8BEN) |
@@ -125,7 +121,7 @@ The dashboard is published as a private HTML artifact. Key sections:
 
 ---
 
-## Keeping your local skill in sync with GitHub
+## Keeping your local changes synced to GitHub
 
 After updating any skill file or the example dashboard locally, run:
 
@@ -133,21 +129,25 @@ After updating any skill file or the example dashboard locally, run:
 ./sync.sh
 ```
 
-This copies the latest skill files from your Claude Code directory and pushes to GitHub.
+This copies the latest skill files from your Claude Code directory and pushes to GitHub. Pass a custom message as an argument if needed:
+
+```bash
+./sync.sh "add XP target for CMIG4"
+```
 
 ---
 
 ## Disclaimer
 
-The analysis produced by this skill is for **informational and planning purposes only**. It is not personalized investment advice, a recommendation to buy or sell any security, or tax guidance from a licensed professional.
+The analysis produced by IPA is for **informational and planning purposes only**. It is not personalized investment advice, a recommendation to buy or sell any security, or tax guidance from a licensed professional.
 
-Tax rules — especially cross-border Brazil/USA treatment under Lei 14.754/2023 — change frequently. Always confirm with a qualified **contador/CPA** before executing any real operation, particularly for operations involving significant capital gains or foreign income.
+Tax rules — especially cross-border Brazil/USA treatment under Lei 14.754/2023 — change frequently. Always confirm with a qualified **contador/CPA** before executing any real operation. The dashboard footer repeats this disclaimer on every output.
 
 ---
 
 ## Contributing
 
-Pull requests welcome. If you extend the skill to support other brokers (XP, NuInvest, Fidelity, etc.), please open a PR with the relevant changes to `SKILL.md` and the reference files.
+Pull requests welcome. If you extend IPA to support other brokers or markets, open a PR with changes to `skill/SKILL.md` and the relevant reference files.
 
 ---
 

@@ -12,13 +12,21 @@ setup() {
   cp "$REPO_ROOT/skill/SKILL.md" "$SKILL_SRC/SKILL.md"
   cp "$REPO_ROOT/skill/references/"*.md "$SKILL_SRC/references/"
 
-  # Create a bare clone as the "remote", then clone that for the working copy
-  BARE_DIR="$(mktemp -d)"
-  git clone --bare "$REPO_ROOT" "$BARE_DIR" --quiet
+  # Clone from REPO_ROOT into a working copy
   WORK_DIR="$(mktemp -d)"
-  git clone "$BARE_DIR" "$WORK_DIR" --quiet
+  git clone "$REPO_ROOT" "$WORK_DIR" --quiet 2>/dev/null || true
   git -C "$WORK_DIR" config user.email "ci@test.local"
   git -C "$WORK_DIR" config user.name "CI"
+
+  # Ensure we are on a real branch (CI checks out a detached HEAD)
+  git -C "$WORK_DIR" checkout -B main 2>/dev/null || true
+
+  # Create a bare repo and push to it so sync.sh can push successfully
+  BARE_DIR="$(mktemp -d)"
+  git init --bare "$BARE_DIR" --quiet
+  git -C "$WORK_DIR" remote set-url origin "$BARE_DIR"
+  git -C "$WORK_DIR" push -u origin main --quiet 2>/dev/null || true
+
   WORK_SYNC="$WORK_DIR/sync.sh"
 }
 
@@ -36,7 +44,6 @@ teardown() {
   echo "# extra line" >> "$SKILL_SRC/SKILL.md"
 
   run bash "$WORK_SYNC"
-  # exits 0 (committed) or 0 (nothing to commit) — both fine
   grep -q "extra line" "$WORK_DIR/skill/SKILL.md"
 }
 
@@ -58,6 +65,6 @@ teardown() {
   echo "# bump" >> "$SKILL_SRC/SKILL.md"
   run bash "$WORK_SYNC" "test: custom message"
   [ "$status" -eq 0 ]
-  # verify the custom message appears in git log of the clone
+  # verify the custom message appears in git log of the working copy
   git -C "$WORK_DIR" log --oneline -1 | grep -q "test: custom message"
 }

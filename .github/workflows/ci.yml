@@ -1,0 +1,54 @@
+name: CI
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+    branches: ["main"]
+
+jobs:
+  skill-integrity:
+    name: Skill file integrity
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Run skill integrity tests
+        run: python -m pytest tests/test_skill_integrity.py -v
+
+  html-validation:
+    name: Dashboard HTML validation
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Run HTML dashboard tests
+        run: python -m pytest tests/test_html_dashboard.py -v
+
+  shell-scripts:
+    name: Shell script tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install bats
+        run: npm install -g bats
+
+      - name: Configure git identity for sync.sh tests
+        run: |
+          git config --global user.email "ci@test.local"
+          git config --global user.name "CI"
+
+      - name: Run install.sh tests
+        run: bats tests/install.bats
+
+      - name: Run sync.sh tests
+        run: bats tests/sync.bats

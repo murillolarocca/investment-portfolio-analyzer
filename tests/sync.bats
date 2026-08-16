@@ -12,20 +12,25 @@ setup() {
   cp "$REPO_ROOT/skill/SKILL.md" "$SKILL_SRC/SKILL.md"
   cp "$REPO_ROOT/skill/references/"*.md "$SKILL_SRC/references/"
 
-  # Clone from REPO_ROOT into a working copy
+  # Build a fresh git repo from scratch — avoids detached HEAD issues
+  # that occur when the CI checkout is a PR merge ref without a real branch.
   WORK_DIR="$(mktemp -d)"
-  git clone "$REPO_ROOT" "$WORK_DIR" --quiet 2>/dev/null || true
+  git init "$WORK_DIR" --quiet
   git -C "$WORK_DIR" config user.email "ci@test.local"
   git -C "$WORK_DIR" config user.name "CI"
 
-  # Ensure we are on a real branch (CI checks out a detached HEAD)
-  git -C "$WORK_DIR" checkout -B main 2>/dev/null || true
+  # Populate with the files sync.sh needs
+  cp "$REPO_ROOT/sync.sh" "$WORK_DIR/sync.sh"
+  cp -r "$REPO_ROOT/skill" "$WORK_DIR/skill"
+  git -C "$WORK_DIR" add -A
+  git -C "$WORK_DIR" commit -m "init" --quiet
 
-  # Create a bare repo and push to it so sync.sh can push successfully
+  # Create a bare remote so sync.sh can push successfully
   BARE_DIR="$(mktemp -d)"
   git init --bare "$BARE_DIR" --quiet
-  git -C "$WORK_DIR" remote set-url origin "$BARE_DIR"
-  git -C "$WORK_DIR" push -u origin main --quiet 2>/dev/null || true
+  git -C "$WORK_DIR" remote add origin "$BARE_DIR"
+  BRANCH="$(git -C "$WORK_DIR" rev-parse --abbrev-ref HEAD)"
+  git -C "$WORK_DIR" push -u origin "$BRANCH" --quiet
 
   WORK_SYNC="$WORK_DIR/sync.sh"
 }
@@ -40,7 +45,6 @@ teardown() {
 }
 
 @test "sync.sh copies SKILL.md back to repo clone" {
-  # Modify the installed copy so we can verify it was synced
   echo "# extra line" >> "$SKILL_SRC/SKILL.md"
 
   run bash "$WORK_SYNC"
@@ -65,6 +69,5 @@ teardown() {
   echo "# bump" >> "$SKILL_SRC/SKILL.md"
   run bash "$WORK_SYNC" "test: custom message"
   [ "$status" -eq 0 ]
-  # verify the custom message appears in git log of the working copy
   git -C "$WORK_DIR" log --oneline -1 | grep -q "test: custom message"
 }
